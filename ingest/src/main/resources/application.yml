@@ -11,6 +11,8 @@ archive:
     url: http://localhost:8003
   ingest:
     url: http://localhost:8004
+    security:
+      check-fingerprint: false
 
 springdoc:
   swagger-ui:
