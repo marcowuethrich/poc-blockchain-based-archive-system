@@ -13,3 +13,13 @@
 
 ### Requirements
 - Java 11 (Kotlin 1.3.72")
+
+
+### API Documentation (OpenAPI)
+
+| Name | URL |
+|---|---|
+| Access | http://localhost:8001/swagger-ui.html |
+| Archival Storage | http://localhost:8002/swagger-ui.html |
+| Data Management | http://localhost:8003/swagger-ui.html |
+| Ingest | http://localhost:8004/swagger-ui.html |

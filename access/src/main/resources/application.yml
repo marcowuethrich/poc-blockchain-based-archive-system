@@ -1,2 +1,16 @@
 server:
   port: 8001
+
+archive:
+  access:
+    url: http://localhost:8001
+  archival-storage:
+    url: http://localhost:8002
+  data-management:
+    url: http://localhost:8003
+  ingest:
+    url: http://localhost:8004
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
