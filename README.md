@@ -23,3 +23,10 @@
 | Archival Storage | http://localhost:8002/swagger-ui.html |
 | Data Management | http://localhost:8003/swagger-ui.html |
 | Ingest | http://localhost:8004/swagger-ui.html |
+
+To generate the openAPI json files run:     
+`gradle -p access clean generateOpenApiDocs && 
+gradle -p archival-storage clean generateOpenApiDocs && 
+gradle -p datamanagement clean generateOpenApiDocs && 
+gradle -p ingest clean generateOpenApiDocs`    
+Output directory: `docs/open-api`
