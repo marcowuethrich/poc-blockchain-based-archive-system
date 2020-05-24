@@ -1,6 +1,6 @@
 package com.archive.ingest.controller
 
-import com.archive.ingest.dto.UploadDto
+import com.archive.ingest.model.dto.UploadDto
 import com.archive.ingest.service.IngestService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.PostMapping

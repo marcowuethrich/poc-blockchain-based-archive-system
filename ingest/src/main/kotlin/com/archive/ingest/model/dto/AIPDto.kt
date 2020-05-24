@@ -1,4 +1,4 @@
-package com.archive.ingest.dto
+package com.archive.ingest.model.dto
 
 /**
  * Archival Information Package (AIP)

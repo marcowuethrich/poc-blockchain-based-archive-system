@@ -1,5 +1,6 @@
-package com.archive.datamanagement.model
+package com.archive.datamanagement.model.dbo
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import java.time.Instant
@@ -7,8 +8,8 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
-@Table(name = "T_Producer")
-class Producer(
+@Table(name = "T_Content")
+class Content(
         @Id
         @Column(nullable = false, unique = true)
         override val id: UUID = UUID.randomUUID(),
@@ -25,9 +26,19 @@ class Producer(
         val name: String? = null,
 
         @Column
-        val uuid: UUID? = null,
+        val extension: String? = null,
 
-        @OneToOne(mappedBy = "producer")
+        @Column
+        val type: String? = null,
+
+        @Column
+        val size: Int? = null,
+
+        @Column
+        val sizeUnit: String? = null,
+
+        @OneToOne(mappedBy = "content")
+        @JsonIgnore
         val archiveObject: ArchiveObject? = null
 
 ) : AuditedJpaPersistable {

@@ -1,4 +1,4 @@
-package com.archive.datamanagement.model
+package com.archive.datamanagement.model.dbo
 
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate

@@ -1,9 +1,14 @@
 package com.archive.ingest.service
 
 import com.archive.ingest.client.DataManagementClient
-import com.archive.ingest.dto.SIPAction
-import com.archive.ingest.dto.SIPDto
-import com.archive.ingest.dto.UploadDto
+import com.archive.ingest.model.dbo.ArchiveObject
+import com.archive.ingest.model.dbo.Content
+import com.archive.ingest.model.dbo.MetaData
+import com.archive.ingest.model.dbo.Producer
+import com.archive.ingest.model.dto.AIPDto
+import com.archive.ingest.model.dto.SIPAction
+import com.archive.ingest.model.dto.SIPDto
+import com.archive.ingest.model.dto.UploadDto
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.slf4j.Logger
@@ -40,16 +45,31 @@ class IngestService(
         }
     }
 
-    private fun addSIP(sipDto: SIPDto) {
-        TODO("Not yet implemented")
+    private fun addSIP(dto: SIPDto) = dto.aips.forEach { aip ->
         // Save MetaData
+        this.dataManagementClient.save(this.convert(dto, aip))
 
         // Save Files
+        TODO("Not yet implemented")
 
         // Make Blockchain entry
 
         // Update MetaDataDatabase with blockchain ID
     }
+
+
+    private fun convert(sip: SIPDto, aip: AIPDto) = ArchiveObject(
+            content = Content(name = aip.dip.content.name,
+                    extension = aip.dip.content.extension,
+                    type = aip.dip.content.type,
+                    size = aip.dip.content.size,
+                    sizeUnit = aip.dip.content.sizeUnit),
+            metaData = MetaData(creation = aip.dip.creation,
+                    authorName = aip.dip.authorName),
+            producer = Producer(name = sip.producer.name,
+                    uuid = sip.producer.uuid)
+    )
+
 
     private fun updateSIP(sipDto: SIPDto) {
         TODO("Not yet implemented")

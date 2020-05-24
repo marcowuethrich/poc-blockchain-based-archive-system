@@ -1,15 +1,15 @@
-package com.archive.datamanagement.model
+package com.archive.datamanagement.model.dbo
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import java.time.Instant
-import java.time.OffsetDateTime
 import java.util.*
 import javax.persistence.*
 
 @Entity
-@Table(name = "T_MetaData")
-class MetaData(
+@Table(name = "T_Blockchain_Ref")
+class BlockchainRef(
         @Id
         @Column(nullable = false, unique = true)
         override val id: UUID = UUID.randomUUID(),
@@ -23,14 +23,11 @@ class MetaData(
         override val updatedAt: Instant = Instant.now(),
 
         @Column
-        val creation: OffsetDateTime? = null,
+        val reference: String? = null,
 
-        @Column
-        val authorName: String? = null,
-
-        @OneToOne(mappedBy = "metaData")
+        @OneToOne(mappedBy = "blockchainRef")
+        @JsonIgnore
         val archiveObject: ArchiveObject? = null
-
 
 ) : AuditedJpaPersistable {
     override fun equals(other: Any?): Boolean = this === other || (other is JpaPersistable && id == other.id)

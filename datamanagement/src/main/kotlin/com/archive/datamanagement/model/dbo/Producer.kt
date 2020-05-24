@@ -1,5 +1,6 @@
-package com.archive.datamanagement.model
+package com.archive.datamanagement.model.dbo
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import java.time.Instant
@@ -7,8 +8,8 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
-@Table(name = "T_Blockchain_Ref")
-class BlockchainRef(
+@Table(name = "T_Producer")
+class Producer(
         @Id
         @Column(nullable = false, unique = true)
         override val id: UUID = UUID.randomUUID(),
@@ -22,9 +23,13 @@ class BlockchainRef(
         override val updatedAt: Instant = Instant.now(),
 
         @Column
-        val reference: String? = null,
+        val name: String? = null,
 
-        @OneToOne(mappedBy = "blockchainRef")
+        @Column
+        val uuid: UUID? = null,
+
+        @OneToOne(mappedBy = "producer")
+        @JsonIgnore
         val archiveObject: ArchiveObject? = null
 
 ) : AuditedJpaPersistable {

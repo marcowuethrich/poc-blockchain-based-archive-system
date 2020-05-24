@@ -1,4 +1,4 @@
-package com.archive.datamanagement.model
+package com.archive.datamanagement.model.dbo
 
 import java.time.Instant
 

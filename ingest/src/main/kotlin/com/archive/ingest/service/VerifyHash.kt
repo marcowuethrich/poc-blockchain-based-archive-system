@@ -1,9 +1,9 @@
 package com.archive.ingest.service
 
-import com.archive.ingest.dto.HashAlgorithm
-import com.archive.ingest.dto.SIPDto
 import com.archive.ingest.exception.FileNotFoundInRequestException
 import com.archive.ingest.exception.InputVerificationException
+import com.archive.ingest.model.dto.HashAlgorithm
+import com.archive.ingest.model.dto.SIPDto
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

@@ -1,14 +1,16 @@
-package com.archive.datamanagement.model
+package com.archive.datamanagement.model.dbo
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import java.time.Instant
+import java.time.OffsetDateTime
 import java.util.*
 import javax.persistence.*
 
 @Entity
-@Table(name = "T_Content")
-class Content(
+@Table(name = "T_MetaData")
+class MetaData(
         @Id
         @Column(nullable = false, unique = true)
         override val id: UUID = UUID.randomUUID(),
@@ -22,25 +24,15 @@ class Content(
         override val updatedAt: Instant = Instant.now(),
 
         @Column
-        val reference: String? = null,
+        val creation: OffsetDateTime? = null,
 
         @Column
-        val name: String? = null,
+        val authorName: String? = null,
 
-        @Column
-        val extension: String? = null,
-
-        @Column
-        val type: String? = null,
-
-        @Column
-        val size: Number? = null,
-
-        @Column
-        val sizeUnit: String? = null,
-
-        @OneToOne(mappedBy = "content")
+        @OneToOne(mappedBy = "metaData")
+        @JsonIgnore
         val archiveObject: ArchiveObject? = null
+
 
 ) : AuditedJpaPersistable {
     override fun equals(other: Any?): Boolean = this === other || (other is JpaPersistable && id == other.id)
