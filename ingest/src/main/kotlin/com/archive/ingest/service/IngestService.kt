@@ -40,7 +40,7 @@ class IngestService(
         }
     }
 
-    private fun deleteSIP(sipDto: SIPDto) {
+    private fun addSIP(sipDto: SIPDto) {
         TODO("Not yet implemented")
         // Save MetaData
 
@@ -62,7 +62,7 @@ class IngestService(
         // Update MetaDataDatabase with blockchain ID
     }
 
-    private fun addSIP(sipDto: SIPDto) {
+    private fun deleteSIP(sipDto: SIPDto) {
         TODO("Not yet implemented")
         // Mark MetaData deleted
 

@@ -1,6 +1,6 @@
 package com.archive.ingest.service
 
-import com.archive.ingest.dto.AIPDto
+import com.archive.ingest.dto.HashAlgorithm
 import com.archive.ingest.dto.SIPDto
 import com.archive.ingest.exception.FileNotFoundInRequestException
 import com.archive.ingest.exception.InputVerificationException
@@ -22,8 +22,11 @@ class VerifyHash(private val mapper: ObjectMapper) {
         var ok = true
 
         sip.aips.forEach { aip ->
-            ok = this.verifyFileHash(aip, files)
-            ok = this.verifyDIPHashes(aip)
+            val file = files.find { file -> file.originalFilename.equals(aip.originalContentFileName) }
+                    ?: throw FileNotFoundInRequestException(aip.originalContentFileName)
+
+            ok = this.verifyHash(file.bytes, aip.contentHash, aip.hashAlg)
+            ok = this.verifyHash(mapper.writeValueAsBytes(aip.dip), aip.dipHash, aip.hashAlg)
         }
         if (!ok) {
             throw InputVerificationException("Verification wasn't successfully!")
@@ -31,30 +34,13 @@ class VerifyHash(private val mapper: ObjectMapper) {
         return ok
     }
 
-    private fun verifyDIPHashes(aip: AIPDto): Boolean {
-        var ok = true
-        for ((index, dip) in aip.dips.withIndex()) {
-            val hash = MessageDigest
-                    .getInstance(aip.hashAlg.algName)
-                    .digest(mapper.writeValueAsBytes(dip))
-
-            ok = hash!!.contentEquals(aip.dipsHashes[index])
-            if (!ok) {
-                LOGGER.warn("DIP Hash doesn't match. request: ${aip.dipsHashes[index]}, calculated: $hash")
-            }
-        }
-        return ok
-    }
-
-    private fun verifyFileHash(aip: AIPDto, files: Set<MultipartFile>): Boolean {
-        val file = files.find { file -> file.originalFilename.equals(aip.originalFileName) }
-                ?: throw FileNotFoundInRequestException(aip.originalFileName)
+    private fun verifyHash(content: ByteArray, existHash: ByteArray, algo: HashAlgorithm): Boolean {
         val hash = MessageDigest
-                .getInstance(aip.hashAlg.algName)
-                .digest(file.bytes)
-        if (!hash!!.contentEquals(aip.contentHash)) {
-            LOGGER.warn("File Hash doesn't match. request: ${aip.contentHash}, calculated: $hash")
+                .getInstance(algo.algName)
+                .digest(content)
+        if (!hash!!.contentEquals(existHash)) {
+            LOGGER.warn("Hash doesn't match. existing: $existHash, calculated: $hash")
         }
-        return hash.contentEquals(aip.contentHash)
+        return hash.contentEquals(existHash)
     }
 }

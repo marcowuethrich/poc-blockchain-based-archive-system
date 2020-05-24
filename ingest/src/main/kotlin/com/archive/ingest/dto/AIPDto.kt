@@ -4,11 +4,11 @@ package com.archive.ingest.dto
  * Archival Information Package (AIP)
  */
 data class AIPDto(
-        val dips: List<DIPDto>,
-        val originalFileName: String,
-        val hashAlg: HashAlgorithm = HashAlgorithm.SHA3_256,
-        val dipsHashes: List<ByteArray>,
-        val contentHash: ByteArray
+        val dip: DIPDto,
+        val dipHash: ByteArray,
+        val originalContentFileName: String,
+        val contentHash: ByteArray,
+        val hashAlg: HashAlgorithm = HashAlgorithm.SHA3_256
 )
 
 enum class HashAlgorithm(val algName: String) {
