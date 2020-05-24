@@ -1,0 +1,18 @@
+version: '3.3'
+services:
+
+  db:
+    image: postgres:11
+    container_name: archive_db
+    restart: always
+    environment:
+      POSTGRES_USER: archive
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: archive
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
+
+volumes:
+  dbdata:

@@ -16,3 +16,23 @@ springdoc:
     path: /swagger-ui.html
     displayRequestDuration: true
   packages-to-scan: com.archive.datamanagement
+
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/archive
+    username: archive
+    password: 1234
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+    open-in-view: false
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+          lob:
+            non_contextual_creation: true
+  application:
+    name: datamanagment

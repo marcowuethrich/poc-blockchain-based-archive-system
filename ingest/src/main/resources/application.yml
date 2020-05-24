@@ -19,3 +19,7 @@ springdoc:
     path: /swagger-ui.html
     displayRequestDuration: true
   packages-to-scan: com.archive.ingest
+
+spring:
+  application:
+    name: ingest

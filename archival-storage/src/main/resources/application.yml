@@ -16,3 +16,7 @@ springdoc:
     path: /swagger-ui.html
     displayRequestDuration: true
   packages-to-scan: com.archive.archival-storage
+
+spring:
+  application:
+    name: archival-storage

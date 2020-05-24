@@ -16,3 +16,7 @@ springdoc:
     path: /swagger-ui.html
     displayRequestDuration: true
   packages-to-scan: com.archive.access
+
+spring:
+  application:
+    name: access

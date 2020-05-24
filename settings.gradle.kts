@@ -1,2 +1,6 @@
 rootProject.name = "archivesystem"
-include("access", "archival-storage" ,"datamanagement", "ingest")
+
+include("access")
+include("archival-storage")
+include("datamanagement")
+include("ingest")
