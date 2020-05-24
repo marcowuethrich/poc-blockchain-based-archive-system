@@ -13,7 +13,7 @@ class ArchiveService(
 
     fun save(entry: ArchiveObject) = this.archiveRepository.save(entry)
 
-    fun update(entry: ArchiveObject): Nothing = TODO()
+    fun update(entry: ArchiveObject): Any = TODO()
 
     fun delete(id: UUID) = this.archiveRepository.deleteById(id)
 

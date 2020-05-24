@@ -1,10 +1,12 @@
 plugins {
-	id("org.springframework.boot")
 	id("com.github.johnrengelman.processes") version "0.5.0"
 	id("org.springdoc.openapi-gradle-plugin") version "1.2.0"
 	kotlin("jvm")
 	kotlin("plugin.spring")
 }
+
+apply(plugin = "org.springframework.boot")
+apply(plugin = "org.jetbrains.kotlin.plugin.jpa")
 
 extra["springCloudVersion"] = "Hoxton.SR4"
 extra["springdocVersion"] = "1.3.9"

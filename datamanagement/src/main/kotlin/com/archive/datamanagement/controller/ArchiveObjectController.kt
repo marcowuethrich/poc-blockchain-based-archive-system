@@ -25,7 +25,7 @@ class ArchiveObjectController(private val archiveService: ArchiveService) {
     fun save(@RequestBody entry: ArchiveObject) = this.archiveService.save(entry)
 
     @PutMapping("/$API_V1/$API_ROOT/{id}")
-    fun update(@PathVariable id: UUID, @RequestBody entry: ArchiveObject): Nothing = this.archiveService.update(entry)
+    fun update(@PathVariable id: UUID, @RequestBody entry: ArchiveObject) = this.archiveService.update(entry)
 
     @DeleteMapping("/$API_V1/$API_ROOT/{id}")
     fun delete(@PathVariable id: UUID) = this.archiveService.delete(id)
