@@ -2,8 +2,8 @@ package com.archive.ingest.service
 
 import com.archive.ingest.exception.FileNotFoundInRequestException
 import com.archive.ingest.exception.InputVerificationException
-import com.archive.ingest.model.dto.HashAlgorithm
-import com.archive.ingest.model.dto.SIPDto
+import com.archive.shared.model.dto.HashAlgorithm
+import com.archive.shared.model.dto.SIPDto
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -22,8 +22,8 @@ class VerifyHash(private val mapper: ObjectMapper) {
         var ok = true
 
         sip.aips.forEach { aip ->
-            val file = files.find { file -> file.originalFilename.equals(aip.originalContentFileName) }
-                    ?: throw FileNotFoundInRequestException(aip.originalContentFileName)
+            val file = files.find { file -> file.originalFilename == aip.originalContentFileName }
+                ?: throw FileNotFoundInRequestException(aip.originalContentFileName)
 
             ok = this.verifyHash(file.bytes, aip.contentHash, aip.hashAlg)
             ok = this.verifyHash(mapper.writeValueAsBytes(aip.dip), aip.dipHash, aip.hashAlg)
@@ -36,8 +36,8 @@ class VerifyHash(private val mapper: ObjectMapper) {
 
     private fun verifyHash(content: ByteArray, existHash: ByteArray, algo: HashAlgorithm): Boolean {
         val hash = MessageDigest
-                .getInstance(algo.algName)
-                .digest(content)
+            .getInstance(algo.algName)
+            .digest(content)
         if (!hash!!.contentEquals(existHash)) {
             LOGGER.warn("Hash doesn't match. existing: $existHash, calculated: $hash")
         }

@@ -14,17 +14,17 @@ import java.util.*
 
 @Service
 class StorageService(
-        @Value("\${archive.archival-storage.store-path}") private val rootPath: String
+    @Value("\${archive.archival-storage.store-path}") private val rootPath: String
 ) {
 
     fun getContent(id: UUID): ResponseEntity<Resource> {
         val file = File("$rootPath/$id")
         if (file.exists()) {
             return ResponseEntity.ok()
-                    .headers(HttpHeaders.EMPTY)
-                    .contentLength(file.length())
-                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                    .body(ByteArrayResource(file.readBytes()))
+                .headers(HttpHeaders.EMPTY)
+                .contentLength(file.length())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(ByteArrayResource(file.readBytes()))
         } else {
             throw FileNotFoundException()
         }

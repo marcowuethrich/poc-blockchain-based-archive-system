@@ -1,7 +1,6 @@
 server:
   port: 8004
 
-
 archive:
   access:
     url: http://localhost:8001

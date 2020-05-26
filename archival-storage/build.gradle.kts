@@ -1,37 +1,34 @@
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+
 plugins {
-	id("com.github.johnrengelman.processes") version "0.5.0"
-	id("org.springdoc.openapi-gradle-plugin") version "1.2.0"
-	kotlin("jvm")
-	kotlin("plugin.spring")
+    kotlin("jvm")
+    id("com.github.johnrengelman.processes") version "0.5.0"
+    id("org.springdoc.openapi-gradle-plugin") version "1.2.0"
 }
 
-apply(plugin = "org.springframework.boot")
-apply(plugin = "org.jetbrains.kotlin.plugin.jpa")
+apply {
+    plugin("org.springframework.boot")
+}
 
-extra["springCloudVersion"] = "Hoxton.SR4"
-extra["springdocVersion"] = "1.3.9"
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
 
 openApi {
-	apiDocsUrl.set("http://localhost:8002/v3/api-docs")
-	outputDir.set(file("../docs/open-api"))
-	outputFileName.set("archival-storage-swagger.json")
-}
-
-dependencyManagement {
-	imports {
-		mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
-	}
+    apiDocsUrl.set("http://localhost:8002/v3/api-docs")
+    outputDir.set(file("../docs/open-api"))
+    outputFileName.set("archival-storage-swagger.json")
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
-	implementation("org.springdoc:springdoc-openapi-ui:${property("springdocVersion")}")
-	implementation("org.springdoc:springdoc-openapi-kotlin:${property("springdocVersion")}")
-	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-	testImplementation("org.springframework.boot:spring-boot-starter-test") {
-		exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
-	}
+    compile(project(":shared"))
+
+    implementation("org.springdoc:springdoc-openapi-ui:${property("springdocVersion")}")
+    implementation("org.springdoc:springdoc-openapi-kotlin:${property("springdocVersion")}")
+}
+
+tasks.getByName<BootJar>("bootJar") {
+    launchScript()
 }

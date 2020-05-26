@@ -17,6 +17,7 @@
             <option value="$PROJECT_DIR$/archival-storage" />
             <option value="$PROJECT_DIR$/datamanagement" />
             <option value="$PROJECT_DIR$/ingest" />
+            <option value="$PROJECT_DIR$/shared" />
           </set>
         </option>
         <option name="useQualifiedModuleNames" value="true" />

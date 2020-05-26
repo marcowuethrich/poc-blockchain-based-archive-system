@@ -1,14 +1,14 @@
 package com.archive.ingest.service
 
-import com.archive.ingest.client.DataManagementClient
-import com.archive.ingest.model.dbo.ArchiveObject
-import com.archive.ingest.model.dbo.Content
-import com.archive.ingest.model.dbo.MetaData
-import com.archive.ingest.model.dbo.Producer
-import com.archive.ingest.model.dto.AIPDto
-import com.archive.ingest.model.dto.SIPAction
-import com.archive.ingest.model.dto.SIPDto
-import com.archive.ingest.model.dto.UploadDto
+import com.archive.shared.client.DataManagementClient
+import com.archive.shared.model.dbo.ArchiveObject
+import com.archive.shared.model.dbo.Content
+import com.archive.shared.model.dbo.MetaData
+import com.archive.shared.model.dbo.Producer
+import com.archive.shared.model.dto.AIPDto
+import com.archive.shared.model.dto.SIPAction
+import com.archive.shared.model.dto.SIPDto
+import com.archive.shared.model.dto.UploadDto
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.slf4j.Logger
@@ -19,10 +19,10 @@ import org.springframework.web.multipart.MultipartFile
 
 @Service
 class IngestService(
-        private val dataManagementClient: DataManagementClient,
-        @Value("\${archive.ingest.security.verify-fingerprint}") private val verifyFingerprint: Boolean,
-        private val mapper: ObjectMapper = jacksonObjectMapper(),
-        private val verifier: VerifyHash = VerifyHash(mapper)
+    private val dataManagementClient: DataManagementClient,
+    @Value("\${archive.ingest.security.verify-fingerprint}") private val verifyFingerprint: Boolean,
+    private val mapper: ObjectMapper = jacksonObjectMapper(),
+    private val verifier: VerifyHash = VerifyHash(mapper)
 ) {
 
     companion object {
@@ -59,15 +59,21 @@ class IngestService(
 
 
     private fun convert(sip: SIPDto, aip: AIPDto) = ArchiveObject(
-            content = Content(name = aip.dip.content.name,
-                    extension = aip.dip.content.extension,
-                    type = aip.dip.content.type,
-                    size = aip.dip.content.size,
-                    sizeUnit = aip.dip.content.sizeUnit),
-            metaData = MetaData(creation = aip.dip.creation,
-                    authorName = aip.dip.authorName),
-            producer = Producer(name = sip.producer.name,
-                    uuid = sip.producer.uuid)
+        content = Content(
+            name = aip.dip.content.name,
+            extension = aip.dip.content.extension,
+            type = aip.dip.content.type,
+            size = aip.dip.content.size,
+            sizeUnit = aip.dip.content.sizeUnit
+        ),
+        metaData = MetaData(
+            creation = aip.dip.creation,
+            authorName = aip.dip.authorName
+        ),
+        producer = Producer(
+            name = sip.producer.name,
+            uuid = sip.producer.uuid
+        )
     )
 
 

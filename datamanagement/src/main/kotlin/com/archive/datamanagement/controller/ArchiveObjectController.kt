@@ -1,6 +1,6 @@
 package com.archive.datamanagement.controller
 
-import com.archive.datamanagement.model.dbo.ArchiveObject
+import com.archive.datamanagement.model.jpa.ArchiveObject
 import com.archive.datamanagement.service.ArchiveService
 import org.springframework.web.bind.annotation.*
 import java.util.*

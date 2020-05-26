@@ -1,13 +1,10 @@
 package com.archive.datamanagement
 
-import org.junit.jupiter.api.Test
-import org.springframework.boot.test.context.SpringBootTest
-
-@SpringBootTest
-class DataManagementApplicationTests {
-
-	@Test
-	fun contextLoads() {
-	}
-
-}
+//@SpringBootTest
+//class DataManagementApplicationTests {
+//
+//    @Test
+//    fun contextLoads() {
+//    }
+//
+//}
