@@ -13,13 +13,13 @@ interface DataManagementClient {
     }
 
     @GetMapping(BASE_URL)
-    fun getAll()
+    fun getAll(): Iterable<ArchiveObject>
 
     @PostMapping(BASE_URL)
-    fun save(@RequestBody entry: ArchiveObject)
+    fun save(@RequestBody entry: ArchiveObject): ArchiveObject
 
     @PutMapping("$BASE_URL/{id}")
-    fun update(@PathVariable id: UUID, @RequestBody entry: ArchiveObject)
+    fun update(@PathVariable id: UUID, @RequestBody entry: ArchiveObject): ArchiveObject
 
     @DeleteMapping("$BASE_URL/{id}")
     fun delete(@PathVariable id: UUID)

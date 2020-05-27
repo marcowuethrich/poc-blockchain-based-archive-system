@@ -1,9 +1,12 @@
 package com.archive.shared.model.dto
 
+import java.util.*
+
 /**
  * Archival Information Package (AIP)
  */
 data class AIPDto(
+    val id: UUID?,
     val dip: DIPDto,
     val dipHash: ByteArray,
     val originalContentFileName: String,

@@ -1,7 +1,7 @@
 package com.archive.ingest.service
 
-import com.archive.ingest.exception.FileNotFoundInRequestException
-import com.archive.ingest.exception.InputVerificationException
+import com.archive.shared.exception.FileNotFoundInRequestException
+import com.archive.shared.exception.InputVerificationException
 import com.archive.shared.model.dto.HashAlgorithm
 import com.archive.shared.model.dto.SIPDto
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -18,14 +18,11 @@ class VerifyHash(private val mapper: ObjectMapper) {
         val LOGGER: Logger = LoggerFactory.getLogger(this::class.java.name)
     }
 
-    fun verifySIP(sip: SIPDto, files: Set<MultipartFile>): Boolean {
+    fun verifySIP(sip: SIPDto, files: List<MultipartFile>): Boolean {
         var ok = true
 
         sip.aips.forEach { aip ->
-            val file = files.find { file -> file.originalFilename == aip.originalContentFileName }
-                ?: throw FileNotFoundInRequestException(aip.originalContentFileName)
-
-            ok = this.verifyHash(file.bytes, aip.contentHash, aip.hashAlg)
+            ok = this.verifyHash(getFile(files, aip.originalContentFileName).bytes, aip.contentHash, aip.hashAlg)
             ok = this.verifyHash(mapper.writeValueAsBytes(aip.dip), aip.dipHash, aip.hashAlg)
         }
         if (!ok) {
@@ -43,4 +40,8 @@ class VerifyHash(private val mapper: ObjectMapper) {
         }
         return hash.contentEquals(existHash)
     }
+
+    private fun getFile(files: List<MultipartFile>, originalContentFileName: String) = files.find { file ->
+        file.originalFilename.equals(originalContentFileName, ignoreCase = false)
+    } ?: throw FileNotFoundInRequestException(originalContentFileName)
 }

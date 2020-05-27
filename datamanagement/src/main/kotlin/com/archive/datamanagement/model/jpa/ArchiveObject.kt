@@ -22,6 +22,9 @@ data class ArchiveObject(
     @Column(nullable = false)
     override val updatedAt: Instant = Instant.now(),
 
+    @Column(nullable = false)
+    var deleted: Boolean = false,
+
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "blockchainRefId", referencedColumnName = "id")
     val blockchainRef: BlockchainRef? = null,

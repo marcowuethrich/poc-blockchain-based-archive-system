@@ -18,7 +18,7 @@ class StorageController(private val service: StorageService) {
 
     companion object {
         const val API_V1 = "v1"
-        const val API_ROOT = "store"
+        const val API_ROOT = "storage"
     }
 
     @GetMapping("/$API_V1/$API_ROOT/{id}")

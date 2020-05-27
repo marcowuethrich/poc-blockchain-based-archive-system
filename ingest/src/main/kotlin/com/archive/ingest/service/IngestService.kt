@@ -1,6 +1,9 @@
 package com.archive.ingest.service
 
+import com.archive.shared.client.ArchivalStorageClient
 import com.archive.shared.client.DataManagementClient
+import com.archive.shared.exception.AIPUpdateException
+import com.archive.shared.exception.FileNotFoundInRequestException
 import com.archive.shared.model.dbo.ArchiveObject
 import com.archive.shared.model.dbo.Content
 import com.archive.shared.model.dbo.MetaData
@@ -16,11 +19,13 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
+import java.util.*
 
 @Service
 class IngestService(
-    private val dataManagementClient: DataManagementClient,
     @Value("\${archive.ingest.security.verify-fingerprint}") private val verifyFingerprint: Boolean,
+    private val dataManagementClient: DataManagementClient,
+    private val archivalStorageClient: ArchivalStorageClient,
     private val mapper: ObjectMapper = jacksonObjectMapper(),
     private val verifier: VerifyHash = VerifyHash(mapper)
 ) {
@@ -29,34 +34,71 @@ class IngestService(
         val LOGGER: Logger = LoggerFactory.getLogger(this::class.java.name)
     }
 
-    fun upload(files: Set<MultipartFile>, dto: UploadDto) {
-        dto.sips.filter {
-            // Verify Fingerprint
-            if (verifyFingerprint) {
-                this.verifier.verifySIP(it, files)
-            } else true
-        }.forEach {
+    fun upload(files: List<MultipartFile>, dto: UploadDto) = with(dto) {
+        if (verifyFingerprint) {
+            verifier.verifySIP(sip, files)
+        }
+        sip.aips.forEach { aip ->
             // Execute Action
-            when (it.action) {
-                SIPAction.ADD -> addSIP(it)
-                SIPAction.UPDATE -> updateSIP(it)
-                SIPAction.DELETE -> deleteSIP(it)
+            when (sip.action) {
+                SIPAction.ADD -> addAPI(sip, aip, getFile(files, aip.originalContentFileName))
+                SIPAction.UPDATE -> updateAPI(sip, aip, getFile(files, aip.originalContentFileName))
+                SIPAction.DELETE -> deleteAPI(aip.id!!)
             }
         }
     }
 
-    private fun addSIP(dto: SIPDto) = dto.aips.forEach { aip ->
+    private fun addAPI(dto: SIPDto, aip: AIPDto, file: MultipartFile) {
         // Save MetaData
-        this.dataManagementClient.save(this.convert(dto, aip))
+        val archiveObject = this.dataManagementClient.save(this.convert(dto, aip))
 
-        // Save Files
-        TODO("Not yet implemented")
+        archiveObject.content.id?.let {
+            // Save File
+            this.archivalStorageClient.add(it, file)
 
-        // Make Blockchain entry
+            // Make Blockchain entry
+            TODO("Not yet implemented")
 
-        // Update MetaDataDatabase with blockchain ID
+            // Update MetaDataDatabase with blockchain ID
+            TODO("Not yet implemented")
+        }
+
     }
 
+    private fun updateAPI(sipDto: SIPDto, aip: AIPDto, file: MultipartFile) {
+        if (aip.id == null) {
+            throw AIPUpdateException("AIP id is null")
+        } else {
+
+            // Update MetaData
+            val archiveObject = this.dataManagementClient.update(aip.id!!, this.convert(sipDto, aip))
+            if (archiveObject.id == null) {
+                throw AIPUpdateException("Could not load AIP Metadata from database with id ${aip.id}")
+            } else {
+
+                // Update Files
+                this.archivalStorageClient.replace(archiveObject.id!!, file)
+
+                // Make Blockchain entry
+                TODO("Not yet implemented")
+
+                // Update MetaDataDatabase with blockchain ID
+                TODO("Not yet implemented")
+            }
+        }
+    }
+
+    private fun deleteAPI(id: UUID) {
+        // Mark MetaData deleted
+        this.dataManagementClient.delete(id)
+
+        // Delete Files
+        this.archivalStorageClient.delete(id)
+    }
+
+    private fun getFile(files: List<MultipartFile>, originalContentFileName: String) = files.find { file ->
+        file.originalFilename.equals(originalContentFileName, ignoreCase = false)
+    } ?: throw FileNotFoundInRequestException(originalContentFileName)
 
     private fun convert(sip: SIPDto, aip: AIPDto) = ArchiveObject(
         content = Content(
@@ -75,23 +117,4 @@ class IngestService(
             uuid = sip.producer.uuid
         )
     )
-
-
-    private fun updateSIP(sipDto: SIPDto) {
-        TODO("Not yet implemented")
-        // Update MetaData
-
-        // Update Files
-
-        // Make Blockchain entry
-
-        // Update MetaDataDatabase with blockchain ID
-    }
-
-    private fun deleteSIP(sipDto: SIPDto) {
-        TODO("Not yet implemented")
-        // Mark MetaData deleted
-
-        // Delete Files
-    }
 }

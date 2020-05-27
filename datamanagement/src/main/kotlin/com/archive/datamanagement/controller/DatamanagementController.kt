@@ -1,7 +1,7 @@
 package com.archive.datamanagement.controller
 
 import com.archive.datamanagement.model.jpa.ArchiveObject
-import com.archive.datamanagement.service.ArchiveService
+import com.archive.datamanagement.service.DatamanagementService
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
@@ -11,7 +11,7 @@ import java.util.*
  */
 @RestController
 @RequestMapping("/datamanagement")
-class ArchiveObjectController(private val archiveService: ArchiveService) {
+class DatamanagementController(private val archiveService: DatamanagementService) {
 
     companion object {
         const val API_V1 = "v1"
@@ -19,13 +19,14 @@ class ArchiveObjectController(private val archiveService: ArchiveService) {
     }
 
     @GetMapping("/$API_V1/$API_ROOT")
-    fun getAll() = this.archiveService.getAllArchiveObjects()
+    fun getAll(): Iterable<ArchiveObject> = this.archiveService.getAllArchiveObjects()
 
     @PostMapping("/$API_V1/$API_ROOT")
-    fun save(@RequestBody entry: ArchiveObject) = this.archiveService.save(entry)
+    fun save(@RequestBody entry: ArchiveObject): ArchiveObject = this.archiveService.save(entry)
 
     @PutMapping("/$API_V1/$API_ROOT/{id}")
-    fun update(@PathVariable id: UUID, @RequestBody entry: ArchiveObject) = this.archiveService.update(entry)
+    fun update(@PathVariable id: UUID, @RequestBody entry: ArchiveObject): ArchiveObject =
+        this.archiveService.update(entry)
 
     @DeleteMapping("/$API_V1/$API_ROOT/{id}")
     fun delete(@PathVariable id: UUID) = this.archiveService.delete(id)

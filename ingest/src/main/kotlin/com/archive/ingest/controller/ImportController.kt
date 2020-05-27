@@ -13,7 +13,7 @@ class ImportController(private val ingestService: IngestService) {
 
     @PostMapping("/v1/upload", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun uploadSIP(
-        @RequestPart("file") file: Set<MultipartFile>,
+        @RequestPart("file") file: List<MultipartFile>,
         @RequestPart("meta") dto: UploadDto
     ) = this.ingestService.upload(file, dto)
 }
