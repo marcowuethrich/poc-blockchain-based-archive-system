@@ -1,6 +1,6 @@
 package com.archive.ingest
 
-import com.archive.ingest.service.VerifyHash
+import com.archive.ingest.service.VerifyService
 import com.archive.shared.model.dto.ContentDto
 import com.archive.shared.model.dto.DIPDto
 import com.archive.shared.model.dto.HashAlgorithm
@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test
 class HashTests {
 
     private val mapper: ObjectMapper = jacksonObjectMapper()
-    private val verifier: VerifyHash = VerifyHash(mapper)
+    private val verifier: VerifyService = VerifyService(mapper)
 
     @Test
     fun sha_256Test() {

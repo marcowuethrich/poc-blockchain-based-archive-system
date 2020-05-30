@@ -38,10 +38,10 @@ class SecurityConfig(
             .authorizeRequests()
             .antMatchers(
                 // api
-                "/ingest/**",
-                "/datamanagement/**",
-                "/archival-storage/**",
-                "/access/**",
+                "/v1/ingest/**",
+                "/v1/datamanagement/**",
+                "/v1/archival-storage/**",
+                "/v1/access/**",
 
                 // api doc
                 "/v3/api-docs/**",

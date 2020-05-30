@@ -1,6 +1,5 @@
-package com.archive.ingest.config
+package com.archive.shared.config
 
-import com.archive.shared.config.ObjectMapperConfigurer
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

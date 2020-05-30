@@ -1,6 +1,7 @@
 package com.archive.shared.client
 
 import com.archive.shared.model.dbo.ArchiveObjectDbo
+import com.archive.shared.model.dto.AIPDto
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.*
 import java.util.*
@@ -9,7 +10,7 @@ import java.util.*
 interface DataManagementClient {
 
     companion object {
-        const val BASE_URL: String = "/datamanagement/v1/archives"
+        const val BASE_URL: String = "/v1/datamanagement/archives"
     }
 
     @GetMapping(BASE_URL)
@@ -26,4 +27,7 @@ interface DataManagementClient {
 
     @DeleteMapping("$BASE_URL/{id}")
     fun delete(@PathVariable id: UUID)
+
+    @GetMapping("$BASE_URL/{id}/aip")
+    fun getAIP(@PathVariable id: UUID): AIPDto
 }

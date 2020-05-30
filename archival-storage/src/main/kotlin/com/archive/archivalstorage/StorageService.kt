@@ -1,4 +1,4 @@
-package com.archive.archivalstorage.storage
+package com.archive.archivalstorage
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.ByteArrayResource

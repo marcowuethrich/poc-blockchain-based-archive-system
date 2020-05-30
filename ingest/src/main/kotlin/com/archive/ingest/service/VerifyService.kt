@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile
 import java.security.MessageDigest
 
 @Service
-class VerifyHash(@Qualifier("objectMapper") private val mapper: ObjectMapper) {
+class VerifyService(@Qualifier("objectMapper") private val mapper: ObjectMapper) {
 
     companion object {
         val LOGGER: Logger = LoggerFactory.getLogger(this::class.java.name)

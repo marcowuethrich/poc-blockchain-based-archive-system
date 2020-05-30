@@ -29,6 +29,9 @@ class MetaDataDbo(
     @Column
     val authorName: String? = null,
 
+    @Column
+    val fingerprint: String? = null,
+
     @OneToOne(mappedBy = "metaData")
     @JsonIgnore
     val archiveObject: ArchiveObjectDbo? = null

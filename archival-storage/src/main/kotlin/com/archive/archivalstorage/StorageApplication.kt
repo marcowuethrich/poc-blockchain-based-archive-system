@@ -15,8 +15,8 @@ import org.springframework.context.annotation.Import
         HibernateJpaAutoConfiguration::class]
 )
 @Import(value = [SharedConfig::class])
-class ArchivalStorageApplication
+class StorageApplication
 
 fun main(args: Array<String>) {
-    runApplication<ArchivalStorageApplication>(*args)
+    runApplication<StorageApplication>(*args)
 }

@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
+import org.zalando.problem.Problem
+import org.zalando.problem.Status
 import java.util.*
 
 @Service
@@ -24,7 +26,7 @@ class IngestService(
     private val dataManagementClient: DataManagementClient,
     private val archivalStorageClient: ArchivalStorageClient,
     @Qualifier("objectMapper") private val mapper: ObjectMapper,
-    private val verifier: VerifyHash = VerifyHash(mapper),
+    private val verifier: VerifyService = VerifyService(mapper),
     private val converter: ModelConverter
 ) {
 
@@ -32,46 +34,46 @@ class IngestService(
         val LOGGER: Logger = LoggerFactory.getLogger(this::class.java.name)
     }
 
-    fun upload(files: List<MultipartFile>, dto: UploadDto) = with(dto) {
+    fun uploadSIP(files: List<MultipartFile>, dto: UploadDto) = with(dto) {
         if (verifyFingerprint) {
             verifier.verifySIP(sip, files)
         }
         sip.aips.forEach { aip ->
             // Execute Action
             when (sip.action) {
-                SIPAction.ADD -> addAPI(sip, aip, getFile(files, aip.originalContentFileName))
-                SIPAction.UPDATE -> updateAPI(sip, aip, getFile(files, aip.originalContentFileName))
-                SIPAction.DELETE -> deleteAPI(aip.id!!)
+                SIPAction.ADD -> addAIP(sip, aip, getFile(files, aip.originalContentFileName))
+                SIPAction.UPDATE -> updateAIP(sip, aip, getFile(files, aip.originalContentFileName))
+                SIPAction.DELETE -> deleteAIP(aip.id!!)
             }
         }
     }
 
-    private fun addAPI(dto: SIPDto, aip: AIPDto, file: MultipartFile) {
+    private fun addAIP(dto: SIPDto, aip: AIPDto, file: MultipartFile) {
         // Save MetaData
         val archiveObject = this.dataManagementClient.save(this.converter.dtoToDbo(dto, aip))
 
-        archiveObject.content!!.id.let {
+        with(archiveObject) {
             try {
                 // Save File
-                this.archivalStorageClient.add(it, file)
+                archivalStorageClient.add(content!!.id, file)
 
                 // Make Blockchain entry
-                TODO("Not yet implemented")
+                // TODO("Blockchain connection")
                 val ref = UUID.randomUUID().toString()
 
                 // Update MetaDataDatabase with blockchain ID
-                this.dataManagementClient.updateBlockchainRef(it, ref)
-
+                dataManagementClient.updateBlockchainRef(id, ref)
             } catch (e: Exception) {
-                this.dataManagementClient.delete(it)
-                this.archivalStorageClient.delete(it)
-                throw e
+                dataManagementClient.delete(id)
+                archivalStorageClient.delete(id)
+                throw Problem.valueOf(Status.INTERNAL_SERVER_ERROR, "Could not add AIP, reason: $e")
             }
-        }
+            throw Problem.valueOf(Status.OK, id.toString())
 
+        }
     }
 
-    private fun updateAPI(sipDto: SIPDto, aip: AIPDto, file: MultipartFile) {
+    private fun updateAIP(sipDto: SIPDto, aip: AIPDto, file: MultipartFile) {
         if (aip.id == null) {
             throw AIPUpdateProblem("AIP id is null")
         } else {
@@ -90,7 +92,7 @@ class IngestService(
         }
     }
 
-    private fun deleteAPI(id: UUID) {
+    private fun deleteAIP(id: UUID) {
         // Mark MetaData deleted
         this.dataManagementClient.delete(id)
 

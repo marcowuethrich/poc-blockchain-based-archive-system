@@ -5,6 +5,6 @@ package com.archive.shared.model.dto
  */
 data class DIPDto(
     val content: ContentDto,
-    val creation: String,
-    val authorName: String
+    val creation: String?,
+    val authorName: String?
 )

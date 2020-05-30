@@ -29,6 +29,9 @@ class ContentDbo(
     val extension: String? = null,
 
     @Column
+    val originalContentFileName: String? = null,
+
+    @Column
     val type: String? = null,
 
     @Column
@@ -36,6 +39,9 @@ class ContentDbo(
 
     @Column
     val sizeUnit: String? = null,
+
+    @Column
+    val fingerprint: String? = null,
 
     @OneToOne(mappedBy = "content")
     @JsonIgnore
