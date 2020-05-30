@@ -1,6 +1,5 @@
-package com.archive.archivalstorage.controller
+package com.archive.archivalstorage.storage
 
-import com.archive.archivalstorage.service.StorageService
 import org.springframework.core.io.Resource
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -25,10 +24,10 @@ class StorageController(private val service: StorageService) {
     fun get(@PathVariable id: UUID): ResponseEntity<Resource> = service.getContent(id)
 
     @PostMapping("/$API_V1/$API_ROOT/{id}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    fun add(@PathVariable id: UUID, @RequestParam content: MultipartFile) = service.addContent(id, content)
+    fun add(@PathVariable id: UUID, @RequestPart content: MultipartFile) = service.addContent(id, content)
 
     @PutMapping("/$API_V1/$API_ROOT/{id}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    fun replace(@PathVariable id: UUID, @RequestParam content: MultipartFile) = service.replaceContent(id, content)
+    fun replace(@PathVariable id: UUID, @RequestPart content: MultipartFile) = service.replaceContent(id, content)
 
     @DeleteMapping("/$API_V1/$API_ROOT/{id}")
     fun delete(@PathVariable id: UUID) = service.deleteContent(id)

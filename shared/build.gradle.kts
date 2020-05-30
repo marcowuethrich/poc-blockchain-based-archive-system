@@ -9,4 +9,5 @@ java {
 
 dependencies {
     compile(kotlin("stdlib-jdk8"))
+    compile("org.springframework.boot:spring-boot-starter-data-jpa")
 }

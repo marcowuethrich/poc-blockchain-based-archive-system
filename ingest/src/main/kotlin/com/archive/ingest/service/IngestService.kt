@@ -2,20 +2,17 @@ package com.archive.ingest.service
 
 import com.archive.shared.client.ArchivalStorageClient
 import com.archive.shared.client.DataManagementClient
-import com.archive.shared.exception.AIPUpdateException
-import com.archive.shared.exception.FileNotFoundInRequestException
-import com.archive.shared.model.dbo.ArchiveObject
-import com.archive.shared.model.dbo.Content
-import com.archive.shared.model.dbo.MetaData
-import com.archive.shared.model.dbo.Producer
+import com.archive.shared.model.ModelConverter
 import com.archive.shared.model.dto.AIPDto
 import com.archive.shared.model.dto.SIPAction
 import com.archive.shared.model.dto.SIPDto
 import com.archive.shared.model.dto.UploadDto
+import com.archive.shared.problem.AIPUpdateProblem
+import com.archive.shared.problem.FileNotFoundInRequestProblem
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
@@ -26,8 +23,9 @@ class IngestService(
     @Value("\${archive.ingest.security.verify-fingerprint}") private val verifyFingerprint: Boolean,
     private val dataManagementClient: DataManagementClient,
     private val archivalStorageClient: ArchivalStorageClient,
-    private val mapper: ObjectMapper = jacksonObjectMapper(),
-    private val verifier: VerifyHash = VerifyHash(mapper)
+    @Qualifier("objectMapper") private val mapper: ObjectMapper,
+    private val verifier: VerifyHash = VerifyHash(mapper),
+    private val converter: ModelConverter
 ) {
 
     companion object {
@@ -50,41 +48,45 @@ class IngestService(
 
     private fun addAPI(dto: SIPDto, aip: AIPDto, file: MultipartFile) {
         // Save MetaData
-        val archiveObject = this.dataManagementClient.save(this.convert(dto, aip))
+        val archiveObject = this.dataManagementClient.save(this.converter.dtoToDbo(dto, aip))
 
-        archiveObject.content.id?.let {
-            // Save File
-            this.archivalStorageClient.add(it, file)
+        archiveObject.content!!.id.let {
+            try {
+                // Save File
+                this.archivalStorageClient.add(it, file)
 
-            // Make Blockchain entry
-            TODO("Not yet implemented")
+                // Make Blockchain entry
+                TODO("Not yet implemented")
+                val ref = UUID.randomUUID().toString()
 
-            // Update MetaDataDatabase with blockchain ID
-            TODO("Not yet implemented")
+                // Update MetaDataDatabase with blockchain ID
+                this.dataManagementClient.updateBlockchainRef(it, ref)
+
+            } catch (e: Exception) {
+                this.dataManagementClient.delete(it)
+                this.archivalStorageClient.delete(it)
+                throw e
+            }
         }
 
     }
 
     private fun updateAPI(sipDto: SIPDto, aip: AIPDto, file: MultipartFile) {
         if (aip.id == null) {
-            throw AIPUpdateException("AIP id is null")
+            throw AIPUpdateProblem("AIP id is null")
         } else {
 
             // Update MetaData
-            val archiveObject = this.dataManagementClient.update(aip.id!!, this.convert(sipDto, aip))
-            if (archiveObject.id == null) {
-                throw AIPUpdateException("Could not load AIP Metadata from database with id ${aip.id}")
-            } else {
+            val archiveObject = this.dataManagementClient.update(aip.id!!, this.converter.dtoToDbo(sipDto, aip))
 
-                // Update Files
-                this.archivalStorageClient.replace(archiveObject.id!!, file)
+            // Update Files
+            this.archivalStorageClient.replace(archiveObject.id, file)
 
-                // Make Blockchain entry
-                TODO("Not yet implemented")
+            // Make Blockchain entry
+            TODO("Not yet implemented")
 
-                // Update MetaDataDatabase with blockchain ID
-                TODO("Not yet implemented")
-            }
+            // Update MetaDataDatabase with blockchain ID
+            TODO("Not yet implemented")
         }
     }
 
@@ -98,23 +100,5 @@ class IngestService(
 
     private fun getFile(files: List<MultipartFile>, originalContentFileName: String) = files.find { file ->
         file.originalFilename.equals(originalContentFileName, ignoreCase = false)
-    } ?: throw FileNotFoundInRequestException(originalContentFileName)
-
-    private fun convert(sip: SIPDto, aip: AIPDto) = ArchiveObject(
-        content = Content(
-            name = aip.dip.content.name,
-            extension = aip.dip.content.extension,
-            type = aip.dip.content.type,
-            size = aip.dip.content.size,
-            sizeUnit = aip.dip.content.sizeUnit
-        ),
-        metaData = MetaData(
-            creation = aip.dip.creation,
-            authorName = aip.dip.authorName
-        ),
-        producer = Producer(
-            name = sip.producer.name,
-            uuid = sip.producer.uuid
-        )
-    )
+    } ?: throw FileNotFoundInRequestProblem(originalContentFileName)
 }

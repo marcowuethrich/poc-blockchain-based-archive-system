@@ -8,12 +8,13 @@ import java.util.*
 data class AIPDto(
     val id: UUID?,
     val dip: DIPDto,
-    val dipHash: ByteArray,
+    val dipHash: String,
     val originalContentFileName: String,
-    val contentHash: ByteArray,
+    val contentHash: String,
     val hashAlg: HashAlgorithm = HashAlgorithm.SHA3_256
 )
 
-enum class HashAlgorithm(val algName: String) {
-    SHA_256("SHA-256"), SHA3_256("SHA3-256");
+enum class HashAlgorithm(val instName: String) {
+    SHA_256("SHA-256"),
+    SHA3_256("SHA3-256");
 }

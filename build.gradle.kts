@@ -44,6 +44,10 @@ subprojects {
 
         implementation("org.springframework.boot:spring-boot-starter-web")
         implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+        implementation("org.springframework.boot:spring-boot-starter-security")
+
+        implementation("org.springframework.security:spring-security-config")
+        implementation("org.zalando:problem-spring-web-starter:0.25.2")
 
         annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 

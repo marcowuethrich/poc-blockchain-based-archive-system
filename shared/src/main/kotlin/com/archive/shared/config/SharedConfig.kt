@@ -5,8 +5,8 @@ import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-@ComponentScan("com.archive.shared")
+@ComponentScan(
+    "com.archive.shared"
+)
 @EnableFeignClients(basePackages = ["com.archive.shared.client"])
-class SharedConfig {
-
-}
+class SharedConfig

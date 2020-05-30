@@ -1,4 +1,4 @@
-package com.archive.archivalstorage.service
+package com.archive.archivalstorage.storage
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.ByteArrayResource
@@ -48,6 +48,7 @@ class StorageService(
             content.transferTo(file)
         }
     }
+
 
     fun deleteContent(id: UUID): Any = {
         val file = File("$rootPath/$id")

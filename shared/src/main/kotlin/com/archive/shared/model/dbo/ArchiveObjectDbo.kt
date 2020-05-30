@@ -1,4 +1,4 @@
-package com.archive.datamanagement.model.jpa
+package com.archive.shared.model.dbo
 
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
@@ -8,7 +8,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "T_Archive_Object")
-data class ArchiveObject(
+data class ArchiveObjectDbo(
 
     @Id
     @Column(nullable = false, unique = true)
@@ -27,23 +27,23 @@ data class ArchiveObject(
 
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "blockchainRefId", referencedColumnName = "id")
-    val blockchainRef: BlockchainRef? = null,
+    var blockchainRef: BlockchainRefDbo? = null,
 
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "contentId", referencedColumnName = "id")
-    val content: Content? = null,
+    val content: ContentDbo? = null,
 
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "metaDataId", referencedColumnName = "id")
-    val metaData: MetaData? = null,
+    val metaData: MetaDataDbo? = null,
 
     @OneToOne(cascade = [CascadeType.ALL])
     @JoinColumn(name = "producerId", referencedColumnName = "id")
-    val producer: Producer? = null
+    val producer: ProducerDbo? = null
 
-) : AuditedJpaPersistable {
+) : AuditedJpaPersistableDbo {
 
-    override fun equals(other: Any?): Boolean = this === other || (other is JpaPersistable && id == other.id)
+    override fun equals(other: Any?): Boolean = this === other || (other is JpaPersistableDbo && id == other.id)
 
     override fun hashCode(): Int = 31 * super.hashCode() + id.hashCode()
 

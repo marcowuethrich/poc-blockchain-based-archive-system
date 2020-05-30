@@ -17,10 +17,10 @@ interface ArchivalStorageClient {
     fun get(@PathVariable id: UUID)
 
     @PostMapping("$BASE_URL/{id}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    fun add(@PathVariable id: UUID, @RequestParam content: MultipartFile)
+    fun add(@PathVariable id: UUID, @RequestPart content: MultipartFile)
 
     @PutMapping("$BASE_URL/{id}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    fun replace(@PathVariable id: UUID, @RequestParam content: MultipartFile)
+    fun replace(@PathVariable id: UUID, @RequestPart content: MultipartFile)
 
     @DeleteMapping("$BASE_URL/{id}")
     fun delete(@PathVariable id: UUID)

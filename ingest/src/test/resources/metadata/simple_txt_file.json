@@ -1,0 +1,28 @@
+{
+  "sip": {
+    "aips": [
+      {
+        "dip": {
+          "content": {
+            "name": "simple_txt_file",
+            "extension": "txt",
+            "type": "text",
+            "size": 43,
+            "sizeUnit": "byte"
+          },
+          "creation": "2020-05-29T15:54:12.380Z",
+          "authorName": "Marco Wüthrich"
+        },
+        "dipHash": "ad15daa9d66fedf14c0d25fb9365917c75dd5029948ff9bdfc6e8d69384a78d0",
+        "originalContentFileName": "simple_txt_file.txt",
+        "contentHash": "2f6fd544d3043e9c3619515b4acbdf64545c348d5674e87098852a63039b34ff",
+        "hashAlg": "SHA3_256"
+      }
+    ],
+    "action": "ADD",
+    "producer": {
+      "name": "ACME Software Solutions",
+      "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    }
+  }
+}

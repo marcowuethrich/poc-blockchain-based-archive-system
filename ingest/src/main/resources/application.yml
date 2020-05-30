@@ -11,7 +11,7 @@ archive:
   ingest:
     url: http://localhost:8004
     security:
-      verify-fingerprint: false
+      verify-fingerprint: true
 
 springdoc:
   swagger-ui:
