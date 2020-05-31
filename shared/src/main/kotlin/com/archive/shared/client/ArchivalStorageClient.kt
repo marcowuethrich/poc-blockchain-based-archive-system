@@ -1,10 +1,11 @@
 package com.archive.shared.client
 
 import org.springframework.cloud.openfeign.FeignClient
+import org.springframework.core.io.Resource
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
-import java.io.File
 import java.util.*
 
 @FeignClient(name = "archival-storage-client", url = "\${archive.archival-storage.url}")
@@ -15,7 +16,7 @@ interface ArchivalStorageClient {
     }
 
     @GetMapping("$BASE_URL/{id}")
-    fun get(@PathVariable id: UUID): File
+    fun get(@PathVariable id: UUID): ResponseEntity<Resource>
 
     @PostMapping("$BASE_URL/{id}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun add(@PathVariable id: UUID, @RequestPart content: MultipartFile)
