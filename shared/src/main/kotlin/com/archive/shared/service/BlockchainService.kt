@@ -1,0 +1,11 @@
+package com.archive.shared.service
+
+import com.archive.shared.model.dto.TransactionDto
+
+interface BlockchainService {
+
+    fun submit(transaction: TransactionDto)
+
+    fun get(address: String)
+
+}

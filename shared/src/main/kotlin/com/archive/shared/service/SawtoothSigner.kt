@@ -1,4 +1,4 @@
-package com.archive.shared
+package com.archive.shared.service
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -8,7 +8,7 @@ import sawtooth.sdk.signing.Secp256k1PrivateKey
 import sawtooth.sdk.signing.Signer
 
 @Component
-class BlockchainSigner(
+class SawtoothSigner(
     @Value("\${archive.blockchain.private-key-hex}") private val privateKeyHex: String
 ) {
 

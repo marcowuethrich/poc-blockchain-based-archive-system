@@ -1,13 +1,14 @@
 package com.archive.ingest
 
-import com.archive.shared.BlockchainSigner
+import com.archive.shared.service.SawtoothSigner
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import sawtooth.sdk.signing.Secp256k1Context
 
-class BlockchainSignerTests {
+class SawtoothSignerTests {
 
-    private val signer: BlockchainSigner = BlockchainSigner("placeholder-private-key")
+    private val signer: SawtoothSigner =
+        SawtoothSigner("placeholder-private-key")
 
     @Test
     fun getNewPrivateKey() {

@@ -55,6 +55,7 @@ subprojects {
         implementation("org.hyperledger.sawtooth:sawtooth-sdk-transaction-processor:v0.1.2")
         implementation("org.hyperledger.sawtooth:sawtooth-sdk-signing:v0.1.2")
         implementation("org.hyperledger.sawtooth:sawtooth-sdk-protos:v0.1.2")
+        implementation("co.nstant.in:cbor:0.9")
 
         testImplementation("org.springframework.boot:spring-boot-starter-test") {
             exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
