@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import java.util.*
 
 class HashTests {
 
@@ -44,6 +45,7 @@ class HashTests {
     fun simpleDIPTest() {
         val dip = DIPDto(
             content = ContentDto(
+                id = UUID.fromString("6081739e-e7a9-4da8-837a-18188ddd3ac6"),
                 name = "simple_txt_file",
                 extension = "txt",
                 type = "text",
@@ -56,7 +58,7 @@ class HashTests {
         val content = mapper.writeValueAsBytes(dip)
         val hash = this.verifier.contentToHash(content, HashAlgorithm.SHA3_256)
         print(hash)
-        assertEquals("ad15daa9d66fedf14c0d25fb9365917c75dd5029948ff9bdfc6e8d69384a78d0", hash)
+        assertEquals("c1a2129402a81cce0f52c4b6b3cfcd95d2b70c601baf269d1e337e4523daec28", hash)
     }
 
 }

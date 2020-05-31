@@ -48,10 +48,13 @@ subprojects {
 
         implementation("org.springframework.security:spring-security-config")
         implementation("org.zalando:problem-spring-web-starter:0.25.2")
-
+        implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
         annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-        implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+        // Hyperledger sawtooth
+        implementation("org.hyperledger.sawtooth:sawtooth-sdk-transaction-processor:v0.1.2")
+        implementation("org.hyperledger.sawtooth:sawtooth-sdk-signing:v0.1.2")
+        implementation("org.hyperledger.sawtooth:sawtooth-sdk-protos:v0.1.2")
 
         testImplementation("org.springframework.boot:spring-boot-starter-test") {
             exclude(group = "org.junit.vintage", module = "junit-vintage-engine")

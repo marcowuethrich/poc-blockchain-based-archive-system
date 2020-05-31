@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Import
+import sawtooth.sdk.signing.Signer
 
 
 @SpringBootApplication(
@@ -20,7 +21,7 @@ import org.springframework.context.annotation.Import
     ]
 )
 @Import(value = [SharedConfig::class])
-class IngestApplication
+class IngestApplication(private val signer: Signer)
 
 fun main(args: Array<String>) {
     runApplication<IngestApplication>(*args)
