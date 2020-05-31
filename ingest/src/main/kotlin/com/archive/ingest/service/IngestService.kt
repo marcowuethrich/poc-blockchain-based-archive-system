@@ -3,12 +3,10 @@ package com.archive.ingest.service
 import com.archive.shared.client.ArchivalStorageClient
 import com.archive.shared.client.DataManagementClient
 import com.archive.shared.model.ModelConverter
-import com.archive.shared.model.dto.AIPDto
-import com.archive.shared.model.dto.SIPAction
-import com.archive.shared.model.dto.SIPDto
-import com.archive.shared.model.dto.UploadDto
+import com.archive.shared.model.dto.*
 import com.archive.shared.problem.AIPUpdateProblem
 import com.archive.shared.problem.FileNotFoundInRequestProblem
+import com.archive.shared.service.SawtoothService
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -27,6 +25,7 @@ class IngestService(
     private val archivalStorageClient: ArchivalStorageClient,
     @Qualifier("objectMapper") private val mapper: ObjectMapper,
     private val verifier: VerifyService = VerifyService(mapper),
+    private val sawtoothService: SawtoothService,
     private val converter: ModelConverter
 ) {
 
@@ -58,11 +57,18 @@ class IngestService(
                 archivalStorageClient.add(content!!.id, file)
 
                 // Make Blockchain entry
-                // TODO("Blockchain connection")
-                val ref = UUID.randomUUID().toString()
+                var address = UUID.randomUUID().toString().replace("-", "")
+                sawtoothService.submit(
+                    TransactionDto(
+                        blockchainAddress = address,
+                        contentHash = content!!.fingerprint.toString(),
+                        dipHash = aip.dipHash
+                    )
+                )
 
-                // Update MetaDataDatabase with blockchain ID
-                dataManagementClient.updateBlockchainRef(id, ref)
+                address = addAddressPrefix(address)
+                // Update MetaDataDatabase with blockchain Address
+                dataManagementClient.updateBlockchainRef(id, address)
             } catch (e: Exception) {
                 dataManagementClient.delete(id)
                 archivalStorageClient.delete(id)
@@ -72,6 +78,10 @@ class IngestService(
 
         }
     }
+
+    private fun addAddressPrefix(ref: String) =
+        this.verifier.contentToHash("archive".toByteArray(), HashAlgorithm.SHA_512) + ref
+
 
     private fun updateAIP(sipDto: SIPDto, aip: AIPDto, file: MultipartFile) {
         if (aip.id == null) {

@@ -16,5 +16,6 @@ data class AIPDto(
 
 enum class HashAlgorithm(val instName: String) {
     SHA_256("SHA-256"),
+    SHA_512("SHA-512"),
     SHA3_256("SHA3-256");
 }

@@ -11,6 +11,9 @@ archive:
     url: http://localhost:8003
   ingest:
     url: http://localhost:8004
+  blockchain:
+    url: http://localhost:8008
+    private-key-hex: b4704ab0023b7a141742eaaa63dadf6e459d6c1da579915a23f6a40ca06cf693
 
 springdoc:
   swagger-ui:

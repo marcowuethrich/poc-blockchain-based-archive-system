@@ -40,8 +40,10 @@ class SawtoothService(
         CborEncoder(payload).encode(
             CborBuilder()
                 .addMap()
+                .put("refAddress", transaction.blockchainAddress)
                 .put("contentHash", transaction.contentHash)
                 .put("dipHash", transaction.dipHash)
+                .put("action", transaction.action.action)
                 .end()
                 .build()
         )
