@@ -1,6 +1,7 @@
 package com.archive.ingest
 
 import com.archive.shared.client.DataManagementClient
+import com.archive.shared.model.ModelConverter
 import com.archive.shared.model.dto.ContentDto
 import com.archive.shared.model.dto.DIPDto
 import com.archive.shared.model.dto.HashAlgorithm
@@ -18,19 +19,22 @@ import org.mockito.junit.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner::class)
 class HashTests {
 
-
     @Mock
     lateinit var sawtoothService: SawtoothService
 
     @Mock
     lateinit var dataManagementClient: DataManagementClient
+
+    @Mock
+    lateinit var converter: ModelConverter
+
     private lateinit var verifier: VerifyService;
     private val mapper: ObjectMapper = jacksonObjectMapper()
 
 
     @Before
     fun init() {
-        this.verifier = VerifyService(mapper, sawtoothService, dataManagementClient)
+        this.verifier = VerifyService(mapper, sawtoothService, dataManagementClient, converter)
     }
 
     @Test
@@ -56,7 +60,16 @@ class HashTests {
         println(hash)
 
         assertEquals("2f6fd544d3043e9c3619515b4acbdf64545c348d5674e87098852a63039b34ff", hash)
+    }
 
+    @Test
+    fun simpleFileTest2() {
+        val testFile =
+            this::class.java.classLoader.getResourceAsStream("data/simple_txt_file_part_2.txt").readAllBytes()
+        val hash = this.verifier.contentToHash(testFile, HashAlgorithm.SHA3_256)
+        println(hash)
+
+        assertEquals("2a71fdbde18fa28d8a714aa42a6e21e3ea57220c54d70e98b64d627b8cba7e9e", hash)
     }
 
     @Test
@@ -76,6 +89,25 @@ class HashTests {
         val hash = this.verifier.contentToHash(content, HashAlgorithm.SHA3_256)
         println(hash)
         assertEquals("b94cf449e31557f6f6e72491673d35bcf11ce1c6a78fae9f2962bd3c893698a0", hash)
+    }
+
+    @Test
+    fun simpleDIPTest2() {
+        val dip = DIPDto(
+            content = ContentDto(
+                name = "simple_txt_file_part_2",
+                extension = "txt",
+                type = "text/plain",
+                size = 50,
+                sizeUnit = "byte"
+            ),
+            creation = "2020-04-10T03:34:18.115",
+            authorName = "Marco Wüthrich"
+        )
+        val content = mapper.writeValueAsBytes(dip)
+        val hash = this.verifier.contentToHash(content, HashAlgorithm.SHA3_256)
+        println(hash)
+        assertEquals("3c3b968c73279de339fc431bb955a0120eea2785fd0f4e3edac35fe9117e6dc2", hash)
     }
 
     @Test

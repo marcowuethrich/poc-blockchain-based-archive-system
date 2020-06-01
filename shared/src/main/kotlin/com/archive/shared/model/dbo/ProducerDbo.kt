@@ -12,7 +12,7 @@ import javax.persistence.*
 class ProducerDbo(
     @Id
     @Column(nullable = false, unique = true)
-    override val id: UUID = UUID.randomUUID(),
+    override var id: UUID = UUID.randomUUID(),
 
     @CreatedDate
     @Column(nullable = false)

@@ -3,7 +3,6 @@ package com.archive.shared.service
 import com.archive.shared.client.DataManagementClient
 import com.archive.shared.model.ModelConverter
 import com.archive.shared.model.dto.AIPDto
-import com.archive.shared.model.dto.DIPDto
 import com.archive.shared.model.dto.HashAlgorithm
 import com.archive.shared.model.dto.SIPDto
 import com.archive.shared.problem.FileNotFoundInRequestProblem
@@ -35,18 +34,22 @@ class VerifyService(
     }
 
     fun verify(sip: SIPDto, files: List<MultipartFile>) = sip.aips.forEach { aip ->
-        this.verifyHash(getFile(files, aip.originalContentFileName).bytes, aip.contentHash, aip.hashAlg)
-        this.verifyHash(mapper.writeValueAsBytes(aip.dip), aip.dipHash, aip.hashAlg)
+        this.verifyHash(getFile(files, aip.originalContentFileName!!).bytes, aip.contentHash!!, aip.hashAlg)
+        this.verifyHash(
+            mapper.writeValueAsBytes(this.converter.createVerifiableAIP(aip.dip!!)),
+            aip.dipHash!!,
+            aip.hashAlg
+        )
     }
 
     fun verify(aip: AIPDto): AIPDto {
         val state = this.sawtoothService.get(this.dataManagementClient.getBlockchainAddress(aip.id!!))
-        this.verifyHash(mapper.writeValueAsBytes(this.converter.createProducerAIP(aip.dip)), state.dipHash, aip.hashAlg)
+        this.verifyHash(
+            mapper.writeValueAsBytes(this.converter.createVerifiableAIP(aip.dip!!)),
+            state.dipHash,
+            aip.hashAlg
+        )
         return aip
-    }
-
-    private fun prepareAIP(dip: DIPDto): DIPDto = dip.apply {
-        dip.content.id = null
     }
 
     fun verify(aip: AIPDto, content: Resource?): Resource {

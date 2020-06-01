@@ -42,7 +42,7 @@ class SawtoothService(
         val batch: Batch = this.createBatch(batchHeader, arrayOf(trans))
         val batchList: ByteArray = this.createBatchList(batch)
 
-        val response = client.postBatchList(batchList)
+        client.postBatchList(batchList)
 
         return this.buildAddress(transaction.blockchainAddress)
     }

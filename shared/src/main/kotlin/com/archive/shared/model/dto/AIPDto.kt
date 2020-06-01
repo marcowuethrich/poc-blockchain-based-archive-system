@@ -7,10 +7,10 @@ import java.util.*
  */
 data class AIPDto(
     var id: UUID? = null,
-    val dip: DIPDto,
-    val dipHash: String,
-    val originalContentFileName: String,
-    val contentHash: String,
+    val dip: DIPDto? = null,
+    val dipHash: String? = null,
+    val originalContentFileName: String? = null,
+    val contentHash: String? = null,
     val hashAlg: HashAlgorithm = HashAlgorithm.SHA3_256
 )
 

@@ -10,4 +10,6 @@ import java.util.*
  */
 interface DataManagementRepository : JpaRepository<ArchiveObjectDbo, UUID> {
     fun findAllByDeleted(deleted: Boolean = false): MutableIterable<ArchiveObjectDbo>
+
+    fun findByIdAndDeleted(id: UUID, deleted: Boolean = false): Optional<ArchiveObjectDbo>
 }

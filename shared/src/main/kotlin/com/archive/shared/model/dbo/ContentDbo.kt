@@ -12,7 +12,7 @@ import javax.persistence.*
 class ContentDbo(
     @Id
     @Column(nullable = false, unique = true)
-    override val id: UUID = UUID.randomUUID(),
+    override var id: UUID = UUID.randomUUID(),
 
     @CreatedDate
     @Column(nullable = false)
@@ -20,7 +20,7 @@ class ContentDbo(
 
     @LastModifiedDate
     @Column(nullable = false)
-    override val updatedAt: Instant = Instant.now(),
+    override var updatedAt: Instant = Instant.now(),
 
     @Column
     val name: String? = null,

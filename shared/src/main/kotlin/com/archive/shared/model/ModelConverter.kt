@@ -18,7 +18,7 @@ class ModelConverter {
 
     fun dtoToDbo(sip: SIPDto, aip: AIPDto) = ArchiveObjectDbo(
         content = ContentDbo(
-            name = aip.dip.content.name,
+            name = aip.dip!!.content.name,
             extension = aip.dip.content.extension,
             originalContentFileName = aip.originalContentFileName,
             type = aip.dip.content.type,
@@ -56,7 +56,7 @@ class ModelConverter {
         contentHash = dbo.content.fingerprint!!
     )
 
-    fun createProducerAIP(dip: DIPDto): DIPDto = DIPDto(
+    fun createVerifiableAIP(dip: DIPDto): DIPDto = DIPDto(
         content = ContentDto(
             name = dip.content.name,
             extension = dip.content.extension,

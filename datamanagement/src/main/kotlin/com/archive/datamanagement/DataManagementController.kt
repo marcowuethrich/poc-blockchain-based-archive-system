@@ -29,7 +29,7 @@ class DataManagementController(private val service: DataManagementService) {
 
     @PutMapping("/$API_V1/$API_ROOT/$API_SERVICE/{aipId}")
     fun update(@PathVariable aipId: UUID, @RequestBody entry: ArchiveObjectDbo): ArchiveObjectDbo =
-        this.service.update(entry)
+        this.service.update(aipId, entry)
 
     @PutMapping("/$API_V1/$API_ROOT/$API_SERVICE/{aipId}/{address}")
     fun updateBlockchainAddress(@PathVariable aipId: UUID, @PathVariable address: String) =

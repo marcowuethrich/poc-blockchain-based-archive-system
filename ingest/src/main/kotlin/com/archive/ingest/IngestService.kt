@@ -8,8 +8,6 @@ import com.archive.shared.problem.AIPUpdateProblem
 import com.archive.shared.problem.FileNotFoundInRequestProblem
 import com.archive.shared.service.SawtoothService
 import com.archive.shared.service.VerifyService
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
@@ -31,25 +29,24 @@ class IngestService(
     private val converter: ModelConverter
 ) {
 
-    companion object {
-        val LOGGER: Logger = LoggerFactory.getLogger(this::class.java.name)
-    }
-
     fun uploadSIP(files: List<MultipartFile>, dto: UploadDto) = with(dto) {
-        if (verifyFingerprint) {
+        if (verifyFingerprint && dto.sip.action != SIPAction.DELETE) {
             verifier.verify(sip, files)
         }
         sip.aips.forEach { aip ->
             // Execute Action
             when (sip.action) {
-                SIPAction.ADD -> addAIP(sip, aip, getFile(files, aip.originalContentFileName))
-                SIPAction.UPDATE -> updateAIP(sip, aip, getFile(files, aip.originalContentFileName))
+                SIPAction.ADD -> addAIP(sip, aip, getFile(files, aip.originalContentFileName!!))
+                SIPAction.UPDATE -> updateAIP(sip, aip, getFile(files, aip.originalContentFileName!!))
                 SIPAction.DELETE -> deleteAIP(aip.id!!)
             }
         }
     }
 
-    private fun addAIP(dto: SIPDto, aip: AIPDto, file: MultipartFile) {
+    private fun addAIP(dto: SIPDto, aip: AIPDto, file: MultipartFile?) {
+        if (file == null) {
+            throw FileNotFoundInRequestProblem("Filename: ${aip.originalContentFileName}")
+        }
         // Save MetaData
         val archiveObject = this.dataManagementClient.save(this.converter.dtoToDbo(dto, aip))
 
@@ -63,11 +60,11 @@ class IngestService(
                     TransactionDto(
                         blockchainAddress = sawtoothService.createRandomAddress(),
                         contentHash = content!!.fingerprint.toString(),
-                        dipHash = aip.dipHash
+                        dipHash = aip.dipHash!!
                     )
                 )
 
-                // TODO check if transaction in blockchain is committed
+                // TODO check if transaction in blockchain was committed
 
                 // Update MetaDataDatabase with blockchain Address
                 dataManagementClient.updateBlockchainAddress(id, address)
@@ -76,40 +73,56 @@ class IngestService(
                 archivalStorageClient.delete(content!!.id)
                 throw Problem.valueOf(Status.INTERNAL_SERVER_ERROR, "Could not add AIP, reason: $e")
             }
-            throw Problem.valueOf(Status.OK, id.toString())
+            throw Problem.valueOf(Status.OK, "aipId: $id")
 
         }
     }
 
 
-    private fun updateAIP(sipDto: SIPDto, aip: AIPDto, file: MultipartFile) {
+    private fun updateAIP(sipDto: SIPDto, aip: AIPDto, file: MultipartFile?) {
         if (aip.id == null) {
             throw AIPUpdateProblem("AIP id is null")
         } else {
 
-            // Update MetaData
-            val archiveObject = this.dataManagementClient.update(aip.id!!, this.converter.dtoToDbo(sipDto, aip))
+            try {
+                // Update MetaData
+                val archiveObject = this.dataManagementClient.update(aip.id!!, this.converter.dtoToDbo(sipDto, aip))
 
-            // Update Files
-            this.archivalStorageClient.replace(archiveObject.id, file)
+                // Update Files
+                if (file != null) {
+                    this.archivalStorageClient.replace(archiveObject.content!!.id, file)
+                }
 
-            // Make Blockchain entry
-            TODO("Not yet implemented")
-
-            // Update MetaDataDatabase with blockchain ID
-            TODO("Not yet implemented")
+                // Make Blockchain entry
+                sawtoothService.submit(
+                    TransactionDto(
+                        // only the internal ref, the namespace will be added by the sawtooth service
+                        blockchainAddress = archiveObject.blockchainRef!!.reference.toString().substring(6),
+                        contentHash = archiveObject.content!!.fingerprint!!,
+                        dipHash = archiveObject.metaData!!.fingerprint!!,
+                        action = TransactionAction.REPLACE
+                    )
+                )
+                // TODO check if transaction in blockchain was committed
+            } catch (e: Exception) {
+                throw Problem.valueOf(Status.INTERNAL_SERVER_ERROR, "$e")
+            }
+            throw Problem.valueOf(Status.OK, "aipId: ${aip.id}")
         }
     }
 
     private fun deleteAIP(id: UUID) {
+        val meta = this.dataManagementClient.getAIP(id)
+
         // Mark MetaData deleted
-        this.dataManagementClient.delete(id)
+        this.dataManagementClient.delete(meta.id!!)
 
         // Delete Files
-        this.archivalStorageClient.delete(id)
+        this.archivalStorageClient.delete(meta.dip!!.content.id!!)
     }
 
-    private fun getFile(files: List<MultipartFile>, originalContentFileName: String) = files.find { file ->
-        file.originalFilename.equals(originalContentFileName, ignoreCase = false)
-    } ?: throw FileNotFoundInRequestProblem(originalContentFileName)
+    private fun getFile(files: List<MultipartFile>, originalContentFileName: String): MultipartFile? =
+        files.find { file ->
+            file.originalFilename.equals(originalContentFileName, ignoreCase = false)
+        }
 }

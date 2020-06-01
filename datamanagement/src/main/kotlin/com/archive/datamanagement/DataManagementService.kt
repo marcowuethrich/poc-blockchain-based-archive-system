@@ -18,21 +18,30 @@ class DataManagementService(
 ) {
     fun getAllArchiveObjects(): Iterable<ArchiveObjectDbo> = this.repository.findAllByDeleted()
 
-    fun getAIP(id: UUID): AIPDto = this.converter.dboToDto(this.repository.findById(id).orElseThrow())
+    fun getAIP(id: UUID): AIPDto = this.converter.dboToDto(this.repository.findByIdAndDeleted(id).orElseThrow())
 
     fun save(entry: ArchiveObjectDbo): ArchiveObjectDbo = this.repository.save(entry)
 
-    fun update(entry: ArchiveObjectDbo): ArchiveObjectDbo = this.save(entry)
+    fun update(aipId: UUID, entry: ArchiveObjectDbo): ArchiveObjectDbo {
+        val updateEntry: ArchiveObjectDbo = this.repository.findByIdAndDeleted(aipId).get()
+        return this.save(entry.also {
+            it.id = updateEntry.id
+            it.content!!.id = updateEntry.content!!.id
+            it.metaData!!.id = updateEntry.metaData!!.id
+            it.producer!!.id = updateEntry.producer!!.id
+            it.blockchainRef = updateEntry.blockchainRef
+        })
+    }
 
-    fun delete(id: UUID) = this.repository.findById(id).ifPresent {
+    fun delete(id: UUID) = this.repository.findByIdAndDeleted(id).ifPresent {
         it.deleted = true
-        this.update(it)
+        this.repository.save(it)
     }
 
     fun clear() = this.repository.deleteAll()
 
     fun updateBlockchainAddress(id: UUID, ref: String) {
-        val dbo = this.repository.findById(id)
+        val dbo = this.repository.findByIdAndDeleted(id)
         dbo.ifPresent {
             it.blockchainRef = BlockchainRefDbo(reference = ref)
             this.repository.save(it)

@@ -24,9 +24,9 @@ class AccessService(
 
     fun getContent(id: UUID): ResponseEntity<Resource> {
         val meta = this.verifier.verify(this.dataManagementClient.getAIP(id))
-        val content: Resource = this.verifier.verify(meta, this.storageClient.get(meta.dip.content.id!!).body)
+        val content: Resource = this.verifier.verify(meta, this.storageClient.get(meta.dip!!.content.id!!).body)
         return ResponseEntity.ok()
-            .contentType(MediaType.parseMediaType(meta.dip.content.type!!))
+            .contentType(MediaType.parseMediaType(meta.dip!!.content.type!!))
             .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + meta.originalContentFileName + "\"")
             .body(content)
     }
