@@ -8,10 +8,8 @@ import com.archive.shared.problem.AIPUpdateProblem
 import com.archive.shared.problem.FileNotFoundInRequestProblem
 import com.archive.shared.service.SawtoothService
 import com.archive.shared.service.VerifyService
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
@@ -24,10 +22,7 @@ class IngestService(
     @Value("\${archive.ingest.security.verify-fingerprint}") private val verifyFingerprint: Boolean,
     private val dataManagementClient: DataManagementClient,
     private val archivalStorageClient: ArchivalStorageClient,
-    @Qualifier("objectMapper") private val mapper: ObjectMapper,
-    private val verifier: VerifyService = VerifyService(
-        mapper
-    ),
+    private val verifier: VerifyService,
     private val sawtoothService: SawtoothService,
     private val converter: ModelConverter
 ) {
@@ -38,7 +33,7 @@ class IngestService(
 
     fun uploadSIP(files: List<MultipartFile>, dto: UploadDto) = with(dto) {
         if (verifyFingerprint) {
-            verifier.verifySIP(sip, files)
+            verifier.verify(sip, files)
         }
         sip.aips.forEach { aip ->
             // Execute Action
@@ -71,7 +66,7 @@ class IngestService(
                 // TODO check if transaction in blockchain is committed
 
                 // Update MetaDataDatabase with blockchain Address
-                dataManagementClient.updateBlockchainRef(id, address)
+                dataManagementClient.updateBlockchainAddress(id, address)
             } catch (e: Exception) {
                 dataManagementClient.delete(id)
                 archivalStorageClient.delete(content!!.id)

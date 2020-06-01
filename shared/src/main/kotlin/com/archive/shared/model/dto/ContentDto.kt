@@ -6,7 +6,7 @@ import java.util.*
  * Information about the content file
  */
 data class ContentDto(
-    val id: UUID?,
+    var id: UUID? = null,
     val name: String?,
     val extension: String?,
     val type: String?,

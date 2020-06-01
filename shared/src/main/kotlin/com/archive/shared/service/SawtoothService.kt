@@ -1,14 +1,19 @@
 package com.archive.shared.service
 
 import co.nstant.`in`.cbor.CborBuilder
+import co.nstant.`in`.cbor.CborDecoder
 import co.nstant.`in`.cbor.CborEncoder
 import com.archive.shared.client.SawtoothClient
+import com.archive.shared.model.dto.StateDto
 import com.archive.shared.model.dto.TransactionDto
 import com.google.common.io.BaseEncoding
 import com.google.protobuf.ByteString
 import org.springframework.stereotype.Service
+import org.zalando.problem.Problem
+import org.zalando.problem.Status
 import sawtooth.sdk.protobuf.*
 import sawtooth.sdk.signing.Signer
+import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.security.MessageDigest
 import java.util.*
@@ -40,11 +45,7 @@ class SawtoothService(
 
     fun createRandomAddress(): String = this.sha512Hash(UUID.randomUUID().toString().toByteArray()).substring(0, 64)
 
-    override fun get(address: String) {
-        TODO("Not yet implemented")
-
-    }
-
+    override fun get(address: String): StateDto = this.decodePayload(this.client.getState(address).data)
 
     private fun createPayload(transaction: TransactionDto): ByteArray {
         val payload = ByteArrayOutputStream()
@@ -60,6 +61,19 @@ class SawtoothService(
         )
 
         return payload.toByteArray()
+    }
+
+    private fun decodePayload(bytes: ByteArray): StateDto {
+        val data = CborDecoder(ByteArrayInputStream(bytes)).decodeNext() as co.nstant.`in`.cbor.model.Map
+        val result = HashMap<String, String>()
+        for (key in data.keys.toTypedArray()) {
+            result[key.toString()] = data[key].toString()
+        }
+        if (result.containsKey("content") && result.containsKey("dip")) {
+            return StateDto(result["content"]!!, result["dip"]!!)
+        } else {
+            throw Problem.valueOf(Status.INTERNAL_SERVER_ERROR, "Could not decode payload from blockchain: $result")
+        }
     }
 
 

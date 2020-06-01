@@ -21,22 +21,25 @@ class DataManagementController(private val service: DataManagementService) {
     @GetMapping("/$API_V1/$API_ROOT/$API_SERVICE")
     fun getAll(): Iterable<ArchiveObjectDbo> = this.service.getAllArchiveObjects()
 
-    @GetMapping("/$API_V1/$API_ROOT/$API_SERVICE/{id}/aip")
-    fun getAIP(@PathVariable id: UUID): AIPDto = this.service.getAIP(id)
+    @GetMapping("/$API_V1/$API_ROOT/$API_SERVICE/{aipId}/aip")
+    fun getAIP(@PathVariable aipId: UUID): AIPDto = this.service.getAIP(aipId)
 
     @PostMapping("/$API_V1/$API_ROOT/$API_SERVICE")
     fun save(@RequestBody entry: ArchiveObjectDbo): ArchiveObjectDbo = this.service.save(entry)
 
-    @PutMapping("/$API_V1/$API_ROOT/$API_SERVICE/{id}")
-    fun update(@PathVariable id: UUID, @RequestBody entry: ArchiveObjectDbo): ArchiveObjectDbo =
+    @PutMapping("/$API_V1/$API_ROOT/$API_SERVICE/{aipId}")
+    fun update(@PathVariable aipId: UUID, @RequestBody entry: ArchiveObjectDbo): ArchiveObjectDbo =
         this.service.update(entry)
 
-    @PutMapping("/$API_V1/$API_ROOT/$API_SERVICE/{id}/{ref}")
-    fun updateBlockchainRef(@PathVariable id: UUID, @PathVariable ref: String) =
-        this.service.updateBlockchainRef(id, ref)
+    @PutMapping("/$API_V1/$API_ROOT/$API_SERVICE/{aipId}/{address}")
+    fun updateBlockchainAddress(@PathVariable aipId: UUID, @PathVariable address: String) =
+        this.service.updateBlockchainAddress(aipId, address)
 
-    @DeleteMapping("/$API_V1/$API_ROOT/$API_SERVICE/{id}")
-    fun delete(@PathVariable id: UUID) = this.service.delete(id)
+    @GetMapping("/$API_V1/$API_ROOT/$API_SERVICE/{aipId}/blockchain-address")
+    fun getBlockchainAddress(@PathVariable aipId: UUID): String = this.service.getBlockchainAddress(aipId)
+
+    @DeleteMapping("/$API_V1/$API_ROOT/$API_SERVICE/{aipId}")
+    fun delete(@PathVariable aipId: UUID) = this.service.delete(aipId)
 
     @DeleteMapping("/$API_V1/$API_ROOT/$API_SERVICE/clear")
     fun clear() = service.clear()

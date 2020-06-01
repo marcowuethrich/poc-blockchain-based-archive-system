@@ -50,7 +50,7 @@ class StorageService(
     }
 
 
-    fun deleteContent(id: UUID): Any = {
+    fun deleteContent(id: UUID) {
         val file = File("$rootPath/$id")
         if (file.exists()) {
             file.delete()

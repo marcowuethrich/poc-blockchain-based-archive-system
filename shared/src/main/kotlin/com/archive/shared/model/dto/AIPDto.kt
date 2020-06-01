@@ -6,7 +6,7 @@ import java.util.*
  * Archival Information Package (AIP)
  */
 data class AIPDto(
-    val id: UUID?,
+    var id: UUID? = null,
     val dip: DIPDto,
     val dipHash: String,
     val originalContentFileName: String,

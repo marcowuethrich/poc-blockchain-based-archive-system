@@ -9,7 +9,6 @@ import com.archive.shared.model.dto.ContentDto
 import com.archive.shared.model.dto.DIPDto
 import com.archive.shared.model.dto.SIPDto
 import org.springframework.stereotype.Service
-import java.time.OffsetDateTime
 
 @Service
 class ModelConverter {
@@ -25,7 +24,7 @@ class ModelConverter {
             fingerprint = aip.contentHash
         ),
         metaData = MetaDataDbo(
-            creation = OffsetDateTime.parse(aip.dip.creation),
+            creation = aip.dip.creation,
             authorName = aip.dip.authorName,
             fingerprint = aip.dipHash
         ),
@@ -46,7 +45,7 @@ class ModelConverter {
                 size = dbo.content.size,
                 sizeUnit = dbo.content.sizeUnit
             ),
-            creation = dbo.metaData!!.creation.toString(),
+            creation = dbo.metaData!!.creation,
             authorName = dbo.metaData.authorName
         ),
         originalContentFileName = dbo.content.originalContentFileName!!,

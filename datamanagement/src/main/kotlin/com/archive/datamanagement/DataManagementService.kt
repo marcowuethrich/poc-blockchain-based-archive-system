@@ -27,11 +27,16 @@ class DataManagementService(
 
     fun clear() = this.repository.deleteAll()
 
-    fun updateBlockchainRef(id: UUID, ref: String) {
+    fun updateBlockchainAddress(id: UUID, ref: String) {
         val dbo = this.repository.findById(id)
         dbo.ifPresent {
             it.blockchainRef = BlockchainRefDbo(reference = ref)
             this.repository.save(it)
         }
+    }
+
+    fun getBlockchainAddress(aipId: UUID): String {
+        val blockchainRef = this.repository.getOne(aipId).blockchainRef
+        return blockchainRef!!.reference!!
     }
 }

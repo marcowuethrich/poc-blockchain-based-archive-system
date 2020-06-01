@@ -1,20 +1,37 @@
 package com.archive.ingest
 
+import com.archive.shared.client.DataManagementClient
 import com.archive.shared.model.dto.ContentDto
 import com.archive.shared.model.dto.DIPDto
 import com.archive.shared.model.dto.HashAlgorithm
+import com.archive.shared.service.SawtoothService
 import com.archive.shared.service.VerifyService
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import org.junit.Before
+import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
-import java.util.*
+import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.junit.MockitoJUnitRunner
 
+@RunWith(MockitoJUnitRunner::class)
 class HashTests {
 
+
+    @Mock
+    lateinit var sawtoothService: SawtoothService
+
+    @Mock
+    lateinit var dataManagementClient: DataManagementClient
+    private lateinit var verifier: VerifyService;
     private val mapper: ObjectMapper = jacksonObjectMapper()
-    private val verifier: VerifyService =
-        VerifyService(mapper)
+
+
+    @Before
+    fun init() {
+        this.verifier = VerifyService(mapper, sawtoothService, dataManagementClient)
+    }
 
     @Test
     fun sha_256Test() {
@@ -36,7 +53,7 @@ class HashTests {
     fun simpleFileTest() {
         val testFile = this::class.java.classLoader.getResourceAsStream("data/simple_txt_file.txt").readAllBytes()
         val hash = this.verifier.contentToHash(testFile, HashAlgorithm.SHA3_256)
-        print(hash)
+        println(hash)
 
         assertEquals("2f6fd544d3043e9c3619515b4acbdf64545c348d5674e87098852a63039b34ff", hash)
 
@@ -46,20 +63,40 @@ class HashTests {
     fun simpleDIPTest() {
         val dip = DIPDto(
             content = ContentDto(
-                id = UUID.fromString("6081739e-e7a9-4da8-837a-18188ddd3ac6"),
                 name = "simple_txt_file",
                 extension = "txt",
-                type = "text",
+                type = "text/plain",
                 size = 43,
                 sizeUnit = "byte"
             ),
-            creation = "2020-05-29T15:54:12.380Z",
+            creation = "2020-04-10T03:34:18.115",
             authorName = "Marco Wüthrich"
         )
         val content = mapper.writeValueAsBytes(dip)
         val hash = this.verifier.contentToHash(content, HashAlgorithm.SHA3_256)
-        print(hash)
-        assertEquals("c1a2129402a81cce0f52c4b6b3cfcd95d2b70c601baf269d1e337e4523daec28", hash)
+        println(hash)
+        assertEquals("b94cf449e31557f6f6e72491673d35bcf11ce1c6a78fae9f2962bd3c893698a0", hash)
     }
+
+    @Test
+    fun verifyDIP() {
+        val dip = DIPDto(
+            content = ContentDto(
+                name = "simple_txt_file",
+                extension = "txt",
+                type = "text/plain",
+                size = 43,
+                sizeUnit = "byte"
+            ),
+            creation = "2020-04-10T03:34:18.115",
+            authorName = "Marco Wüthrich"
+        )
+        this.verifier.verifyHash(
+            mapper.writeValueAsBytes(dip),
+            "b94cf449e31557f6f6e72491673d35bcf11ce1c6a78fae9f2962bd3c893698a0",
+            HashAlgorithm.SHA3_256
+        )
+    }
+
 
 }

@@ -58,8 +58,10 @@ subprojects {
         implementation("co.nstant.in:cbor:0.9")
 
         testImplementation("org.springframework.boot:spring-boot-starter-test") {
-            exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+            exclude(module = "mockito-core")
         }
+        testImplementation("com.nhaarman:mockito-kotlin:1.6.0")
+
     }
 
     tasks.withType<Test> {

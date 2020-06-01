@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import java.time.Instant
-import java.time.OffsetDateTime
 import java.util.*
 import javax.persistence.*
 
@@ -24,7 +23,7 @@ class MetaDataDbo(
     override val updatedAt: Instant = Instant.now(),
 
     @Column
-    val creation: OffsetDateTime? = null,
+    val creation: String? = null,
 
     @Column
     val authorName: String? = null,

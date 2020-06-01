@@ -19,15 +19,18 @@ interface DataManagementClient {
     @PostMapping(BASE_URL)
     fun save(@RequestBody entry: ArchiveObjectDbo): ArchiveObjectDbo
 
-    @PutMapping("$BASE_URL/{id}")
-    fun update(@PathVariable id: UUID, @RequestBody entry: ArchiveObjectDbo): ArchiveObjectDbo
+    @PutMapping("$BASE_URL/{aipId}")
+    fun update(@PathVariable aipId: UUID, @RequestBody entry: ArchiveObjectDbo): ArchiveObjectDbo
 
-    @PutMapping("$BASE_URL/{id}/{ref}")
-    fun updateBlockchainRef(@PathVariable id: UUID, @PathVariable ref: String)
+    @PutMapping("$BASE_URL/{aipId}/{address}")
+    fun updateBlockchainAddress(@PathVariable aipId: UUID, @PathVariable address: String)
 
-    @DeleteMapping("$BASE_URL/{id}")
-    fun delete(@PathVariable id: UUID)
+    @DeleteMapping("$BASE_URL/{aipId}")
+    fun delete(@PathVariable aipId: UUID)
 
-    @GetMapping("$BASE_URL/{id}/aip")
-    fun getAIP(@PathVariable id: UUID): AIPDto
+    @GetMapping("$BASE_URL/{aipId}/aip")
+    fun getAIP(@PathVariable aipId: UUID): AIPDto
+
+    @GetMapping("$BASE_URL/{aipId}/blockchain-address")
+    fun getBlockchainAddress(@PathVariable aipId: UUID): String
 }
