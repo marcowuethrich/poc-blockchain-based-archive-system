@@ -20,15 +20,16 @@ class StorageController(private val service: StorageService) {
         const val API_SERVICE = "storage"
     }
 
-    @GetMapping("/$API_V1/$API_ROOT/$API_SERVICE/{id}")
-    fun get(@PathVariable id: UUID): ResponseEntity<Resource> = service.getContent(id)
+    @GetMapping("/$API_V1/$API_ROOT/$API_SERVICE/{contentId}")
+    fun get(@PathVariable contentId: UUID): ResponseEntity<Resource> = service.getContent(contentId)
 
-    @PostMapping("/$API_V1/$API_ROOT/$API_SERVICE/{id}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    fun add(@PathVariable id: UUID, @RequestPart content: MultipartFile) = service.addContent(id, content)
+    @PostMapping("/$API_V1/$API_ROOT/$API_SERVICE/{contentId}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    fun add(@PathVariable contentId: UUID, @RequestPart content: MultipartFile) = service.addContent(contentId, content)
 
-    @PutMapping("/$API_V1/$API_ROOT/$API_SERVICE/{id}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    fun replace(@PathVariable id: UUID, @RequestPart content: MultipartFile) = service.replaceContent(id, content)
+    @PutMapping("/$API_V1/$API_ROOT/$API_SERVICE/{contentId}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    fun replace(@PathVariable contentId: UUID, @RequestPart content: MultipartFile) =
+        service.replaceContent(contentId, content)
 
-    @DeleteMapping("/$API_V1/$API_ROOT/$API_SERVICE/{id}")
-    fun delete(@PathVariable id: UUID) = service.deleteContent(id)
+    @DeleteMapping("/$API_V1/$API_ROOT/$API_SERVICE/{contentId}")
+    fun delete(@PathVariable contentId: UUID) = service.deleteContent(contentId)
 }

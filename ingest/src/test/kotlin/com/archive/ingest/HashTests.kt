@@ -1,9 +1,9 @@
 package com.archive.ingest
 
-import com.archive.ingest.service.VerifyService
 import com.archive.shared.model.dto.ContentDto
 import com.archive.shared.model.dto.DIPDto
 import com.archive.shared.model.dto.HashAlgorithm
+import com.archive.shared.service.VerifyService
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -13,7 +13,8 @@ import java.util.*
 class HashTests {
 
     private val mapper: ObjectMapper = jacksonObjectMapper()
-    private val verifier: VerifyService = VerifyService(mapper)
+    private val verifier: VerifyService =
+        VerifyService(mapper)
 
     @Test
     fun sha_256Test() {

@@ -7,6 +7,7 @@ import com.archive.shared.model.dto.*
 import com.archive.shared.problem.AIPUpdateProblem
 import com.archive.shared.problem.FileNotFoundInRequestProblem
 import com.archive.shared.service.SawtoothService
+import com.archive.shared.service.VerifyService
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -24,7 +25,9 @@ class IngestService(
     private val dataManagementClient: DataManagementClient,
     private val archivalStorageClient: ArchivalStorageClient,
     @Qualifier("objectMapper") private val mapper: ObjectMapper,
-    private val verifier: VerifyService = VerifyService(mapper),
+    private val verifier: VerifyService = VerifyService(
+        mapper
+    ),
     private val sawtoothService: SawtoothService,
     private val converter: ModelConverter
 ) {
@@ -57,30 +60,27 @@ class IngestService(
                 archivalStorageClient.add(content!!.id, file)
 
                 // Make Blockchain entry
-                var address = UUID.randomUUID().toString().replace("-", "")
-                sawtoothService.submit(
+                val address = sawtoothService.submit(
                     TransactionDto(
-                        blockchainAddress = address,
+                        blockchainAddress = sawtoothService.createRandomAddress(),
                         contentHash = content!!.fingerprint.toString(),
                         dipHash = aip.dipHash
                     )
                 )
 
-                address = addAddressPrefix(address)
+                // TODO check if transaction in blockchain is committed
+
                 // Update MetaDataDatabase with blockchain Address
                 dataManagementClient.updateBlockchainRef(id, address)
             } catch (e: Exception) {
                 dataManagementClient.delete(id)
-                archivalStorageClient.delete(id)
+                archivalStorageClient.delete(content!!.id)
                 throw Problem.valueOf(Status.INTERNAL_SERVER_ERROR, "Could not add AIP, reason: $e")
             }
             throw Problem.valueOf(Status.OK, id.toString())
 
         }
     }
-
-    private fun addAddressPrefix(ref: String) =
-        this.verifier.contentToHash("archive".toByteArray(), HashAlgorithm.SHA_512) + ref
 
 
     private fun updateAIP(sipDto: SIPDto, aip: AIPDto, file: MultipartFile) {

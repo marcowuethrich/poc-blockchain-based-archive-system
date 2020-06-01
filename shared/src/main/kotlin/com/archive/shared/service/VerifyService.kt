@@ -1,4 +1,4 @@
-package com.archive.ingest.service
+package com.archive.shared.service
 
 import com.archive.shared.model.dto.HashAlgorithm
 import com.archive.shared.model.dto.SIPDto

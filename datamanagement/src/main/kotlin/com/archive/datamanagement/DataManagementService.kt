@@ -18,7 +18,7 @@ class DataManagementService(
 
     fun save(entry: ArchiveObjectDbo): ArchiveObjectDbo = this.repository.save(entry)
 
-    fun update(entry: ArchiveObjectDbo): ArchiveObjectDbo = TODO()
+    fun update(entry: ArchiveObjectDbo): ArchiveObjectDbo = this.save(entry)
 
     fun delete(id: UUID) = this.repository.findById(id).ifPresent {
         it.deleted = true

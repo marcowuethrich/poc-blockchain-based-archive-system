@@ -4,7 +4,7 @@ import com.archive.shared.model.dto.TransactionDto
 
 interface BlockchainService {
 
-    fun submit(transaction: TransactionDto)
+    fun submit(transaction: TransactionDto): String
 
     fun get(address: String)
 

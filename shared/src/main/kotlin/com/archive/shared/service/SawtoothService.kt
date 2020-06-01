@@ -19,7 +19,13 @@ class SawtoothService(
     private val client: SawtoothClient
 ) : BlockchainService {
 
-    override fun submit(transaction: TransactionDto) {
+    val archiveRecordNameSpace = this.sha512Hash(ADDRESS_PREFIX.toByteArray()).substring(0, 6)
+
+    companion object {
+        const val ADDRESS_PREFIX = "archive"
+    }
+
+    override fun submit(transaction: TransactionDto): String {
         val payload: ByteArray = this.createPayload(transaction)
         val transHeader: TransactionHeader = this.createTransactionHeader(transaction, payload)
         val trans: Transaction = this.createTransaction(transHeader, payload)
@@ -27,13 +33,18 @@ class SawtoothService(
         val batch: Batch = this.createBatch(batchHeader, arrayOf(trans))
         val batchList: ByteArray = this.createBatchList(batch)
 
-        client.postBatchList(batchList)
+        val response = client.postBatchList(batchList)
+
+        return this.buildAddress(transaction.blockchainAddress)
     }
+
+    fun createRandomAddress(): String = this.sha512Hash(UUID.randomUUID().toString().toByteArray()).substring(0, 64)
 
     override fun get(address: String) {
         TODO("Not yet implemented")
 
     }
+
 
     private fun createPayload(transaction: TransactionDto): ByteArray {
         val payload = ByteArrayOutputStream()
@@ -57,13 +68,12 @@ class SawtoothService(
             .setSignerPublicKey(this.signer.publicKey.hex())
             .setFamilyName(transaction.familyName)
             .setFamilyVersion(transaction.familyVersion)
-            .addInputs(transaction.blockchainAddress)
-            .addOutputs(transaction.blockchainAddress)
+            .addInputs(buildAddress(transaction.blockchainAddress))
+            .addOutputs(buildAddress(transaction.blockchainAddress))
             .setPayloadSha512(sha512Hash(payload))
             .setBatcherPublicKey(signer.publicKey.hex())
             .setNonce(UUID.randomUUID().toString())
             .build()
-
 
     private fun sha512Hash(input: ByteArray): String {
         val digest = MessageDigest.getInstance("SHA-512")
@@ -72,12 +82,12 @@ class SawtoothService(
         return BaseEncoding.base16().lowerCase().encode(digest.digest())
     }
 
+
     private fun createTransaction(header: TransactionHeader, payload: ByteArray) = Transaction.newBuilder()
         .setHeader(header.toByteString())
         .setPayload(ByteString.copyFrom(payload))
         .setHeaderSignature(this.signer.sign(header.toByteArray()))
         .build();
-
 
     private fun createBatchHeader(trans: Array<Transaction>): BatchHeader = BatchHeader.newBuilder()
         .setSignerPublicKey(signer.publicKey.hex())
@@ -95,4 +105,6 @@ class SawtoothService(
         .addBatches(batch)
         .build()
         .toByteArray()
+
+    private fun buildAddress(ref: String) = this.archiveRecordNameSpace + ref
 }

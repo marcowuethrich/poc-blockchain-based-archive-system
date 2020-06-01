@@ -15,15 +15,15 @@ interface ArchivalStorageClient {
         const val BASE_URL: String = "/v1/archival-storage/storage"
     }
 
-    @GetMapping("$BASE_URL/{id}")
-    fun get(@PathVariable id: UUID): ResponseEntity<Resource>
+    @GetMapping("$BASE_URL/{contentId}")
+    fun get(@PathVariable contentId: UUID): ResponseEntity<Resource>
 
-    @PostMapping("$BASE_URL/{id}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    fun add(@PathVariable id: UUID, @RequestPart content: MultipartFile)
+    @PostMapping("$BASE_URL/{contentId}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    fun add(@PathVariable contentId: UUID, @RequestPart content: MultipartFile)
 
-    @PutMapping("$BASE_URL/{id}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    fun replace(@PathVariable id: UUID, @RequestPart content: MultipartFile)
+    @PutMapping("$BASE_URL/{contentId}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    fun replace(@PathVariable contentId: UUID, @RequestPart content: MultipartFile)
 
-    @DeleteMapping("$BASE_URL/{id}")
-    fun delete(@PathVariable id: UUID)
+    @DeleteMapping("$BASE_URL/{contentId}")
+    fun delete(@PathVariable contentId: UUID)
 }
