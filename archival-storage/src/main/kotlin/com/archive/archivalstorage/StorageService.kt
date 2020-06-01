@@ -12,6 +12,10 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.util.*
 
+/**
+ * Storage Service
+ * Implements the logic of the storage modulê
+ */
 @Service
 class StorageService(
     @Value("\${archive.archival-storage.store-path}") private val rootPath: String

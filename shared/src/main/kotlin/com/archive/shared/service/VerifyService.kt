@@ -1,9 +1,13 @@
 package com.archive.shared.service
 
 import com.archive.shared.client.DataManagementClient
-import com.archive.shared.model.dto.*
+import com.archive.shared.model.ModelConverter
+import com.archive.shared.model.dto.AIPDto
+import com.archive.shared.model.dto.DIPDto
+import com.archive.shared.model.dto.HashAlgorithm
+import com.archive.shared.model.dto.SIPDto
 import com.archive.shared.problem.FileNotFoundInRequestProblem
-import com.archive.shared.problem.InputVerificationProblem
+import com.archive.shared.problem.InputValidationProblem
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.apache.commons.io.IOUtils
@@ -14,11 +18,16 @@ import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.security.MessageDigest
 
+/**
+ * Verify service
+ * Implements the validation and verification logic
+ */
 @Service
 class VerifyService(
     private val mapper: ObjectMapper = jacksonObjectMapper(),
     private val sawtoothService: SawtoothService,
-    private val dataManagementClient: DataManagementClient
+    private val dataManagementClient: DataManagementClient,
+    private val converter: ModelConverter
 ) {
 
     companion object {
@@ -32,19 +41,7 @@ class VerifyService(
 
     fun verify(aip: AIPDto): AIPDto {
         val state = this.sawtoothService.get(this.dataManagementClient.getBlockchainAddress(aip.id!!))
-        // create copy without internal content id
-        val dip = DIPDto(
-            content = ContentDto(
-                name = aip.dip.content.name,
-                extension = aip.dip.content.extension,
-                type = aip.dip.content.type,
-                size = aip.dip.content.size,
-                sizeUnit = aip.dip.content.sizeUnit
-            ),
-            creation = aip.dip.creation,
-            authorName = aip.dip.authorName
-        )
-        this.verifyHash(mapper.writeValueAsBytes(dip), state.dipHash, aip.hashAlg)
+        this.verifyHash(mapper.writeValueAsBytes(this.converter.createProducerAIP(aip.dip)), state.dipHash, aip.hashAlg)
         return aip
     }
 
@@ -67,7 +64,7 @@ class VerifyService(
         val hash = this.contentToHash(content, algo)
         if (!hash.contentEquals(existHash)) {
             LOGGER.warn("Hash doesn't match. existing: $existHash, calculated: $hash")
-            throw InputVerificationProblem()
+            throw InputValidationProblem()
         }
     }
 

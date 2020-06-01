@@ -6,6 +6,10 @@ import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
+/**
+ * Data management client
+ * Feign client for access to the data-management module
+ */
 @FeignClient(name = "data-management-client", url = "\${archive.data-management.url}")
 interface DataManagementClient {
 

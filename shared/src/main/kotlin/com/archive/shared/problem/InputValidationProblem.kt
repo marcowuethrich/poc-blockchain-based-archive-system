@@ -5,9 +5,12 @@ import org.zalando.problem.Exceptional
 import org.zalando.problem.Status
 import java.net.URI
 
-class InputVerificationProblem(detail: String = "error.api.verification-invalid") : AbstractThrowableProblem(
+/**
+ * Input validation problem
+ */
+class InputValidationProblem(detail: String = "error.api.validation-invalid") : AbstractThrowableProblem(
     URI.create(""),
-    "Verification problem!",
+    "Validation problem!",
     Status.BAD_REQUEST,
     detail
 ) {

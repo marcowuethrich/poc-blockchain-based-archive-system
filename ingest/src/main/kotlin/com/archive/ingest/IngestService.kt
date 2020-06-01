@@ -1,4 +1,4 @@
-package com.archive.ingest.service
+package com.archive.ingest
 
 import com.archive.shared.client.ArchivalStorageClient
 import com.archive.shared.client.DataManagementClient
@@ -17,6 +17,10 @@ import org.zalando.problem.Problem
 import org.zalando.problem.Status
 import java.util.*
 
+/**
+ * Ingest service
+ * Implements the logic for importing the sip's form producer
+ */
 @Service
 class IngestService(
     @Value("\${archive.ingest.security.verify-fingerprint}") private val verifyFingerprint: Boolean,

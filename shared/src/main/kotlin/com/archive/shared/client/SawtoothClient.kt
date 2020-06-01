@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 
+/**
+ * Archival storage client
+ * Feign client for access to the hyperledger sawtooth
+ */
 @FeignClient(name = "sawtooth-client", url = "\${archive.blockchain.url}")
 interface SawtoothClient {
 

@@ -1,6 +1,5 @@
-package com.archive.ingest.controller
+package com.archive.ingest
 
-import com.archive.ingest.service.IngestService
 import com.archive.shared.model.dto.UploadDto
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.PostMapping
@@ -11,6 +10,10 @@ import javax.validation.Valid
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 
+/**
+ * Ingest controller
+ * REST endpoint for uploading archives from producer
+ */
 @RestController
 class IngestController(private val ingestService: IngestService) {
 

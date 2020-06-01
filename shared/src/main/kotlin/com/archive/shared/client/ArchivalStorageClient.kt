@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import java.util.*
 
+/**
+ * Archival storage client
+ * Feign client for access to the archival-storage module
+ */
 @FeignClient(name = "archival-storage-client", url = "\${archive.archival-storage.url}")
 interface ArchivalStorageClient {
 

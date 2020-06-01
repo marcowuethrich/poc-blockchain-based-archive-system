@@ -9,8 +9,5 @@ import java.util.*
  * Spring Data Repository
  */
 interface DataManagementRepository : JpaRepository<ArchiveObjectDbo, UUID> {
-
-//    fun findByIdAndDeleted(id: UUID, deleted: Boolean = false): MutableIterable<ArchiveObject>
-
     fun findAllByDeleted(deleted: Boolean = false): MutableIterable<ArchiveObjectDbo>
 }

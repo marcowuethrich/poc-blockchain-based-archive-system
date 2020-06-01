@@ -10,7 +10,6 @@ import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Import
 import sawtooth.sdk.signing.Signer
 
-
 @SpringBootApplication(
     exclude = [
         ErrorMvcAutoConfiguration::class,

@@ -6,14 +6,14 @@
           "content": {
             "name": "simple_txt_file",
             "extension": "txt",
-            "type": "text",
+            "type": "text/plain",
             "size": 43,
             "sizeUnit": "byte"
           },
-          "creation": "2020-05-29T15:54:12.380Z",
+          "creation": "2020-04-10T03:34:18.115",
           "authorName": "Marco Wüthrich"
         },
-        "dipHash": "ad15daa9d66fedf14c0d25fb9365917c75dd5029948ff9bdfc6e8d69384a78d0",
+        "dipHash": "b94cf449e31557f6f6e72491673d35bcf11ce1c6a78fae9f2962bd3c893698a0",
         "originalContentFileName": "simple_txt_file.txt",
         "contentHash": "2f6fd544d3043e9c3619515b4acbdf64545c348d5674e87098852a63039b34ff",
         "hashAlg": "SHA3_256"

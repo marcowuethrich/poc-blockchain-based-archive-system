@@ -7,6 +7,10 @@ import sawtooth.sdk.signing.Secp256k1Context
 import sawtooth.sdk.signing.Secp256k1PrivateKey
 import sawtooth.sdk.signing.Signer
 
+/**
+ * Sawtooth signer
+ * Managed the sawtooth keys and signer
+ */
 @Component
 class SawtoothSigner(
     @Value("\${archive.blockchain.private-key-hex}") private val privateKeyHex: String

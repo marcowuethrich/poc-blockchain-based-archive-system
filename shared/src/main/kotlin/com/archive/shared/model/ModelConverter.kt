@@ -10,6 +10,9 @@ import com.archive.shared.model.dto.DIPDto
 import com.archive.shared.model.dto.SIPDto
 import org.springframework.stereotype.Service
 
+/**
+ * Model converter
+ */
 @Service
 class ModelConverter {
 
@@ -51,6 +54,18 @@ class ModelConverter {
         originalContentFileName = dbo.content.originalContentFileName!!,
         dipHash = dbo.metaData.fingerprint!!,
         contentHash = dbo.content.fingerprint!!
+    )
+
+    fun createProducerAIP(dip: DIPDto): DIPDto = DIPDto(
+        content = ContentDto(
+            name = dip.content.name,
+            extension = dip.content.extension,
+            type = dip.content.type,
+            size = dip.content.size,
+            sizeUnit = dip.content.sizeUnit
+        ),
+        creation = dip.creation,
+        authorName = dip.authorName
     )
 
 }

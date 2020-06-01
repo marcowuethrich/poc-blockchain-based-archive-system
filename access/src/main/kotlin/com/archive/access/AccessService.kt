@@ -11,6 +11,9 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import java.util.*
 
+/**
+ * AccessService for managing the logic
+ */
 @Service
 class AccessService(
     private val storageClient: ArchivalStorageClient,

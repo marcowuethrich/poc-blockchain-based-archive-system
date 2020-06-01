@@ -7,6 +7,10 @@ import com.archive.shared.model.dto.AIPDto
 import org.springframework.stereotype.Service
 import java.util.*
 
+/**
+ * DataManagement Service
+ * Implements the logic of the meta data module
+ */
 @Service
 class DataManagementService(
     private val repository: DataManagementRepository,

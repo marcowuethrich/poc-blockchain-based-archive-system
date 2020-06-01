@@ -5,6 +5,9 @@ import org.zalando.problem.Exceptional
 import org.zalando.problem.Status
 import java.net.URI
 
+/**
+ * AIP update problem
+ */
 class AIPUpdateProblem(detail: String = "error.api.update-aip") : AbstractThrowableProblem(
     URI.create(""),
     "Could not update AIP!",

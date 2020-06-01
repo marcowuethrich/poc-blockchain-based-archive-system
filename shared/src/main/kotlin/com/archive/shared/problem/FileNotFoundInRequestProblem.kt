@@ -5,6 +5,9 @@ import org.zalando.problem.Exceptional
 import org.zalando.problem.Status
 import java.net.URI
 
+/**
+ * File not found in request problem
+ */
 class FileNotFoundInRequestProblem(detail: String = "error.api.file-not-found") : AbstractThrowableProblem(
     URI.create(""),
     "File not found!",

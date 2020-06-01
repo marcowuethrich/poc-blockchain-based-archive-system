@@ -6,6 +6,5 @@ import org.springframework.transaction.annotation.EnableTransactionManagement
 
 @Configuration
 @EnableTransactionManagement
-//@EnableJpaRepositories(basePackages = ["com.docurizer.shared.repository.jpa"])
 @EntityScan(basePackages = ["com.archive.shared.model.dbo"])
 class JpaConfig

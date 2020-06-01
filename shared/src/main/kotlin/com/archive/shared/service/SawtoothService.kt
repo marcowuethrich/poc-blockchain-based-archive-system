@@ -18,6 +18,10 @@ import java.io.ByteArrayOutputStream
 import java.security.MessageDigest
 import java.util.*
 
+/**
+ * Sawtooth service
+ * Implements the logic to accessing hyperledger sawtooth
+ */
 @Service
 class SawtoothService(
     private val signer: Signer,
