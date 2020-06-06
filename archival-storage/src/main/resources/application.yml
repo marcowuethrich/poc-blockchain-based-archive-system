@@ -6,7 +6,7 @@ archive:
     url: http://localhost:8001
   archival-storage:
     url: http://localhost:8002
-    store-path: /Users/marco/workspace/study/thesis/archivesystem/archival-storage/src/main/resources/data
+    store-path: /Users/marco/workspace/study/thesis/archivesystem/data
   data-management:
     url: http://localhost:8003
   ingest:
