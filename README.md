@@ -30,3 +30,10 @@ gradle -p archival-storage clean generateOpenApiDocs &&
 gradle -p datamanagement clean generateOpenApiDocs && 
 gradle -p ingest clean generateOpenApiDocs`    
 Output directory: `docs/open-api`
+
+
+## Blockchain (Sawtooth)
+
+To run the sawtooth network:
+1. `cd ./blockchain`
+2. `docker-compose up`

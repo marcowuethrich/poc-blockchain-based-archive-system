@@ -1,0 +1,30 @@
+{
+  "sip": {
+    "aips": [
+      {
+        "id": "51cdf11d-f156-48dc-b2e1-f6cecf9aa1f0",
+        "dip": {
+          "content": {
+            "id": "23efc55f-8d09-4b53-9f29-d36213261e38",
+            "name": "simple_txt_file_part_2",
+            "extension": "txt",
+            "type": "text/plain",
+            "size": 50,
+            "sizeUnit": "byte"
+          },
+          "creation": "2020-04-10T03:34:18.115",
+          "authorName": "Marco Wüthrich"
+        },
+        "dipHash": "3c3b968c73279de339fc431bb955a0120eea2785fd0f4e3edac35fe9117e6dc2",
+        "originalContentFileName": "simple_txt_file_part_2.txt",
+        "contentHash": "2a71fdbde18fa28d8a714aa42a6e21e3ea57220c54d70e98b64d627b8cba7e9e",
+        "hashAlg": "SHA3_256"
+      }
+    ],
+    "action": "UPDATE",
+    "producer": {
+      "name": "ACME Software Solutions",
+      "uuid": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    }
+  }
+}

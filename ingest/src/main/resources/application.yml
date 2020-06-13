@@ -14,7 +14,7 @@ archive:
       verify-fingerprint: true
   blockchain:
     url: http://localhost:8008
-    private-key-hex: b4704ab0023b7a141742eaaa63dadf6e459d6c1da579915a23f6a40ca06cf693
+    private-key-hex: b4704ab0023b7a141742eaaa63dadf6e459d6c1da579915a23f6a40ca06cf693 # 01e705390fa4d43e4f4a3acb14722830223f8261847645ff9fa6f4805d8ccb47
 
 springdoc:
   swagger-ui:

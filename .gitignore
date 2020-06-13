@@ -190,4 +190,7 @@ fabric.properties
 
 docs
 
-archival-storage/src/main/resources/data
+/data
+
+/blockchain/volumes/data/
+/blockchain/volumes/pbft-shared/
